@@ -8,12 +8,15 @@ import 'package:gitgossip/features/chat/widgets/receive_message.dart';
 import 'package:gitgossip/features/chat/widgets/sent_message_widget.dart';
 
 class MessageScreen extends StatelessWidget {
-  const MessageScreen({super.key});
+  MessageScreen({super.key});
+
+  final TextEditingController _inputController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ChatAppBar(
+        context: context,
         name: 'Maya Rodriguez',
         status: 'Offline',
         avatarColor: const Color(0xFF1F5E3F),
@@ -65,7 +68,9 @@ class MessageScreen extends StatelessWidget {
               ],
             ),
           ),
-          ChatInputBar(),
+          ChatInputBar(
+            inputController: _inputController,
+          ),
         ],
       ),
     );
