@@ -14,16 +14,18 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+    return Expanded(
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        ),
+        icon: Icon(icon, color: Colors.white, size: 18),
+        label: Text(label, style: TextStyle(color: Colors.white)),
+        onPressed: () {},
       ),
-      icon: Icon(icon, color: Colors.white, size: 18),
-      label: Text(label, style: TextStyle(color: Colors.white)),
-      onPressed: () {},
     );
   }
 }

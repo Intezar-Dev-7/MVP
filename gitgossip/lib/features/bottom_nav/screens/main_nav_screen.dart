@@ -25,9 +25,13 @@ class MainNavScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.black,
+      extendBody: true, // Make body extend behind the nav bar
       body: pages[navController.currentIndex],
 
-      bottomNavigationBar: const BottomNavBar(),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24), // Add padding to float
+        child: const BottomNavBar(),
+      ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: GestureDetector(
@@ -43,6 +47,13 @@ class MainNavScreen extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: const LinearGradient(colors: [Colors.green, Colors.blue]),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.5),
+                blurRadius: 20,
+                offset: const Offset(0, 5),
+              )
+            ]
           ),
           child: const Icon(Icons.add, color: Colors.white, size: 28),
         ),

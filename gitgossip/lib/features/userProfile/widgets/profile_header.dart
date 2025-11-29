@@ -56,18 +56,6 @@ class ProfileHeader extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: onEditPressed,
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: const BoxDecoration(
-                color: Color(0xFF4CAF50),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.edit, color: Colors.white, size: 20),
-            ),
-          ),
         ],
       ),
     );
