@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:gitgossip/features/authentication/services/google_auth_service.dart';
+
 import 'package:gitgossip/features/authentication/widgets/signin_buttons.dart';
 import 'package:gitgossip/features/bottom_nav/screens/main_nav_screen.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final GoogleAuthServices _googleAuth = GoogleAuthServices();
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +42,24 @@ class SignInScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 SignInButton(
-                  icon: Icons
-                      .g_mobiledata, // You can use another icon if you prefer
+                  icon: Icons.g_mobiledata,
                   label: 'Sign in with Google',
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainNavScreen()),
-                    );
+                  onPressed: () async {
+                    final userCredential = await _googleAuth.signInWithGoogle();
+                    if (userCredential != null) {
+                      // Login success -> Main Screen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainNavScreen(),
+                        ),
+                      );
+                    } else {
+                      // Login Failed
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Sigin Failed')));
+                    }
                   },
                 ),
                 const SizedBox(height: 16),
@@ -48,7 +67,7 @@ class SignInScreen extends StatelessWidget {
                   icon: Icons
                       .code, // You can use Icons.adb or another icon for GitHub
                   label: 'Sign in with GitHub',
-                  onPressed: () {},
+                  onPressed: () async {},
                 ),
                 const SizedBox(height: 120),
               ],

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "622479540982",
+    "project_id": "gitgossip-62e31",
+    "storage_bucket": "gitgossip-62e31.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622479540982:android:e9e6ac458aabadef9e22d7",
+        "android_client_info": {
+          "package_name": "com.example.gitgossip"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjvV5eSOPt5-rOyvKqrxUPfMSXMoCO2Tc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
