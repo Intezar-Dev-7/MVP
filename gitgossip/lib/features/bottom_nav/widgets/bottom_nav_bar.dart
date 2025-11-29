@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/nav_controller.dart';
@@ -11,45 +9,38 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final navController = Provider.of<NavController>(context);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(40),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(40),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.4),
-                blurRadius: 20,
-                spreadRadius: 5,
-                offset: const Offset(0, 5),
-              ),
-            ],
+    return Container(
+      height: 90,
+      decoration: BoxDecoration(
+        color: const Color(0xFF1F2C33), // Dark color from your chat input
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 25,
+            spreadRadius: -5,
+            offset: const Offset(0, 10),
           ),
-          child: BottomAppBar(
-            color: Colors.transparent,
-            elevation: 2,
-            shape: const CircularNotchedRectangle(),
-            notchMargin: 5,
-            child: SizedBox(
-              height: 65,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _navItem(Icons.home_outlined, "Feed", 0, navController),
-                  _navItem(
-                    Icons.explore_outlined,
-                    "Discover",
-                    1,
-                    navController,
-                  ),
-                  const SizedBox(width: 30),
-                  _navItem(Icons.chat_bubble_outline, "Chat", 3, navController),
-                  _navItem(Icons.person_outline, "Profile", 4, navController),
-                ],
-              ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
+        child: BottomAppBar(
+          color: Colors.transparent,
+          elevation: 0,
+          shape: const CircularNotchedRectangle(),
+          notchMargin: 8.0,
+          child: SizedBox(
+            height: 30,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _navItem(Icons.home_outlined, "Feed", 0, navController),
+                _navItem(Icons.explore_outlined, "Discover", 1, navController),
+                const SizedBox(width: 40), // The space for the FAB
+                _navItem(Icons.chat_bubble_outline, "Chat", 3, navController),
+                _navItem(Icons.person_outline, "Profile", 4, navController),
+              ],
             ),
           ),
         ),
@@ -64,52 +55,30 @@ class BottomNavBar extends StatelessWidget {
     NavController controller,
   ) {
     final bool isSelected = controller.currentIndex == index;
+    final Color activeColor = Colors.green.shade400;
+    final Color inactiveColor = Colors.grey.shade600;
 
-    return GestureDetector(
-      onTap: () => controller.changeTab(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: isSelected
-            ? BoxDecoration(
-                color: Colors.green.withOpacity(0.25),
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.green.withOpacity(0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              )
-            : null,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => controller.changeTab(index),
+        behavior: HitTestBehavior.translucent,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Icon(
               icon,
-              color: isSelected ? Colors.green : Colors.white70,
-              size: 22,
+              color: isSelected ? activeColor : inactiveColor,
+              size: 26,
             ),
-            // const SizedBox(height: 3),
+            const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.green : Colors.white70,
-                fontSize: 11,
+                color: isSelected ? activeColor : inactiveColor,
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
-            if (isSelected)
-              Container(
-                // margin: const EdgeInsets.only(top: 2),
-                height: 4,
-                width: 5,
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-              ),
           ],
         ),
       ),
