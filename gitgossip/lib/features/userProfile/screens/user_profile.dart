@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gitgossip/features/notifications/screens/notification_screen.dart';
+
 import 'package:gitgossip/features/userProfile/screens/edit_profile_screen.dart';
 import 'package:gitgossip/features/userProfile/widgets/profile_header.dart';
 import 'package:gitgossip/features/userProfile/widgets/project_section.dart';
@@ -11,10 +11,6 @@ class UserProfileScreen extends StatelessWidget {
 
   void _navigateToEditProfile(BuildContext context) {
     // Navigate to edit profile screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => EditProfileScreen()),
-    );
   }
 
   @override
@@ -28,43 +24,38 @@ class UserProfileScreen extends StatelessWidget {
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white70),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),));
-            },
-          ),
           PopupMenuButton(
-              icon: const Icon(Icons.more_vert, color: Colors.white70),
-              color: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: const BorderSide(
-                  color: Colors.grey,
-                  width: 1,
+            icon: const Icon(Icons.more_vert, color: Colors.white70),
+            color: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: Colors.grey, width: 1),
+            ),
+            itemBuilder: (context) => [
+              PopupMenuItem<String>(
+                value: 'EDIT',
+                height: 48,
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfileScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Edit Profile",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            itemBuilder: (context) => [
-            PopupMenuItem<String>(
-              value: 'EDIT',
-              height: 48,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.edit,
-                    color: Colors.white70,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                      'Edit Profile',
-                      style: TextStyle(color: Colors.grey)
-                  ),
-                ],
-              ),
-            )
-            ]
-          )
+            ],
+          ),
         ],
       ),
       body: SingleChildScrollView(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gitgossip/features/authentication/screens/auth_wrapper.dart';
 import 'dart:async';
-
-import 'package:gitgossip/features/authentication/screens/signin_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const SignInScreen()),
+        MaterialPageRoute(builder: (context) => const AuthWrapper()),
       );
     });
   }

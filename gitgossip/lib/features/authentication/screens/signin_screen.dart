@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gitgossip/features/authentication/services/google_auth_service.dart';
 
 import 'package:gitgossip/features/authentication/widgets/signin_buttons.dart';
-import 'package:gitgossip/features/bottom_nav/screens/main_nav_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -42,30 +42,25 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 32),
                 SignInButton(
-                  icon: Icons.g_mobiledata,
+                  icon: FontAwesomeIcons.google,
                   label: 'Sign in with Google',
                   onPressed: () async {
-                    final userCredential = await _googleAuth.signInWithGoogle();
-                    if (userCredential != null) {
-                      // Login success -> Main Screen
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MainNavScreen(),
+                    print("Google button tapped");
+                    final user = await _googleAuth.signInWithGoogle();
+                    if (user == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Google Sign-In cancelled"),
                         ),
                       );
-                    } else {
-                      // Login Failed
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text('Sigin Failed')));
+                      print("SIGN IN RESULT: $user");
                     }
                   },
                 ),
                 const SizedBox(height: 16),
                 SignInButton(
-                  icon: Icons
-                      .code, // You can use Icons.adb or another icon for GitHub
+                  icon: FontAwesomeIcons
+                      .github, // You can use Icons.adb or another icon for GitHub
                   label: 'Sign in with GitHub',
                   onPressed: () async {},
                 ),

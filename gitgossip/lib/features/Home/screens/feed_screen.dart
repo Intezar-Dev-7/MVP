@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gitgossip/features/Home/models/feed_model.dart';
 import 'package:gitgossip/features/Home/widgets/feed_post_card.dart';
+import 'package:gitgossip/features/notifications/screens/notification_screen.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   actions: [
+
+      //   ],
+      // ),
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Padding(
@@ -14,13 +20,33 @@ class FeedScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Feed',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Feed',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  IconButton(
+                    icon: const Icon(
+                      Icons.notifications,
+                      color: Colors.white70,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NotificationScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               Expanded(

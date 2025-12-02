@@ -50,6 +50,8 @@ dependencies:
   firebase_auth: ^6.1.2
   google_sign_in: ^6.2.1
   cloud_firestore: ^6.1.0
+  flutter_launcher_icons: ^0.14.4
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:
@@ -102,3 +104,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+  # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  image_path: "assets/icons/appIcon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  min_sdk_android: 24 # android min sdk min:16, default 21
+  adaptive_icon_background: "#ffffff" # You can use a color or image for the background
+  adaptive_icon_foreground: "assets/icons/appIcon.png" # For adaptive icons on Android
