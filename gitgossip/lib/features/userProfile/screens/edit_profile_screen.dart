@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gitgossip/core/widgets/custom_snack_bar.dart';
 import 'package:gitgossip/features/authentication/screens/signin_screen.dart';
+import 'package:gitgossip/features/authentication/services/authServices.dart';
 import 'package:gitgossip/features/authentication/services/google_auth_service.dart';
 import 'package:gitgossip/features/userProfile/widgets/skill_chip.dart';
 import 'package:gitgossip/features/userProfile/widgets/social_linked_field.dart';
@@ -14,34 +14,16 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _bioController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController(
-    text: 'johndoe@gmail.com',
-  );
-  final TextEditingController _phoneController = TextEditingController(
-    text: '9098541236',
-  );
-  final TextEditingController _nameController = TextEditingController(
-    text: 'John Doe',
-  );
-  final TextEditingController _usernameController = TextEditingController(
-    text: 'johndoe',
-  );
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _customSkillController = TextEditingController();
-  final TextEditingController _githubController = TextEditingController(
-    text: 'github.com/username',
-  );
-  final TextEditingController _linkedinController = TextEditingController(
-    text: 'linkedin.com/in/username',
-  );
-  final TextEditingController _twitterController = TextEditingController(
-    text: 'twitter.com/username',
-  );
-  final TextEditingController _instagramController = TextEditingController(
-    text: 'instagram.com/username',
-  );
-  final TextEditingController _portfolioController = TextEditingController(
-    text: 'yourportfolio.com',
-  );
+  final TextEditingController _githubController = TextEditingController();
+  final TextEditingController _linkedinController = TextEditingController();
+  final TextEditingController _twitterController = TextEditingController();
+  final TextEditingController _instagramController = TextEditingController();
+  final TextEditingController _portfolioController = TextEditingController();
 
   final List<String> _selectedSkills = [
     'React',
@@ -70,7 +52,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   final GoogleAuthServices _googleAuth = GoogleAuthServices();
-
+  final AuthServices _authServices = AuthServices();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -339,21 +321,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  bool signedOut = await _googleAuth.signOutFromGoogle();
+                  await _authServices.signOutFromGoogle();
 
-                  if (signedOut) {
-                    // Navigate to SignInScreen and remove all routes
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SignInScreen(),
-                      ),
-                      (route) => false,
-                    );
-                  } else {
-                    // Optional: Show error snackbar
-                    showAnimatedSnackBar(context, "Logout Failed");
-                  }
+                  // Navigate to SignInScreen and remove all routes
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SignInScreen(),
+                    ),
+                    (route) => false,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gitgossip/features/authentication/services/authServices.dart';
 import 'package:gitgossip/features/authentication/services/google_auth_service.dart';
 
 import 'package:gitgossip/features/authentication/widgets/signin_buttons.dart';
@@ -13,6 +14,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final GoogleAuthServices _googleAuth = GoogleAuthServices();
+  final AuthServices _authServices = AuthServices();
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +48,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   label: 'Sign in with Google',
                   onPressed: () async {
                     print("Google button tapped");
-                    final user = await _googleAuth.signInWithGoogle();
-                    if (user == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Google Sign-In cancelled"),
-                        ),
-                      );
-                      print("SIGN IN RESULT: $user");
-                    }
+                    await _authServices.signInWithGoogle();
                   },
                 ),
                 const SizedBox(height: 16),
