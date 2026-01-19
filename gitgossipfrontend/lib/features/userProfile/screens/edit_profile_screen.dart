@@ -1,0 +1,514 @@
+import 'package:flutter/material.dart';
+import 'package:gitgossip/core/widgets/custom_snack_bar.dart';
+import 'package:gitgossip/features/authentication/screens/signin_screen.dart';
+import 'package:gitgossip/features/authentication/services/google_auth_service.dart';
+import 'package:gitgossip/features/userProfile/models/social_links_model.dart';
+import 'package:gitgossip/features/userProfile/services/editProfileServices.dart';
+import 'package:gitgossip/features/userProfile/widgets/skill_chip.dart';
+import 'package:gitgossip/features/userProfile/widgets/social_linked_field.dart';
+import 'package:image_picker/image_picker.dart';
+
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
+
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _customSkillController = TextEditingController();
+  final TextEditingController _githubController = TextEditingController();
+  final TextEditingController _linkedinController = TextEditingController();
+  final TextEditingController _instagramController = TextEditingController();
+  final TextEditingController _portfolioController = TextEditingController();
+
+  final GoogleAuthServices _googleAuthServices = GoogleAuthServices();
+  final Editprofileservices _editProfileServices = Editprofileservices();
+  final List<String> _selectedSkills = [];
+
+  @override
+  void dispose() {
+    _bioController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _fullNameController.dispose();
+    _usernameController.dispose();
+    _customSkillController.dispose();
+    _githubController.dispose();
+    _linkedinController.dispose();
+    _instagramController.dispose();
+    _portfolioController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // _loadUserDetails();
+  }
+
+  // Future<void> _loadUserDetails() async {
+  //   final mongoUser = await _editProfileServices.getMyProfileData(
+  //     context: context,
+  //   );
+  //   final fbUser = FirebaseAuth.instance.currentUser;
+
+  //   setState(() {
+  //     _user = mongoUser;
+  //     _nameController.text = mongoUser.name ?? fbUser?.email ?? "";
+  //   });
+  // }
+
+  void _addCustomSkill() {
+    if (_customSkillController.text.isNotEmpty) {
+      setState(() {
+        _selectedSkills.add(_customSkillController.text);
+        _customSkillController.clear();
+      });
+    }
+  }
+
+  void _removeSkill(String skill) {
+    setState(() {
+      _selectedSkills.remove(skill);
+    });
+  }
+
+  XFile? _pickedProfileImage;
+
+  Future<void> _pickProfileImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
+    if (image != null) {
+      setState(() {
+        _pickedProfileImage = image;
+      });
+    }
+  }
+
+  // Function to add user details
+  Future<void> addUserDetails() async {
+    await _editProfileServices.editUserProfile(
+      fullName: _fullNameController.text,
+      username: _usernameController.text,
+      userPhoneNumber: _phoneController.text,
+      userBio: _bioController.text,
+      profilePic: _pickedProfileImage,
+      techStack: _selectedSkills,
+      socialLinks: SocialLinks(
+        github: _githubController.text.trim(),
+        instagram: _instagramController.text.trim(),
+        linkedin: _linkedinController.text.trim(),
+        portfolio: _portfolioController.text.trim(),
+      ),
+      context: context,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0A0F0D),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Edit Profile',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Set up your developer profile to get started',
+              style: TextStyle(color: Colors.white60, fontSize: 14),
+            ),
+            const SizedBox(height: 24),
+            // profile avatar section
+            Center(
+              child: Stack(
+                children: [
+                  GestureDetector(
+                    onTap: _pickProfileImage,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFF1A1A1A),
+                        border: Border.all(
+                          color: const Color(0xFF2A2A2A),
+                          width: 2,
+                        ),
+                      ),
+                      // child: _pickedProfileImage != null
+                      // ? ClipOval(
+                      //     child: Image.file(
+                      //       File(_pickedProfileImage!.path),
+                      //       width: 120,
+                      //       height: 120,
+                      //       fit: BoxFit.cover,
+                      //     ),
+                      //   )
+                      // : _user?.profilePic != null
+                      // ? ClipOval(
+                      //     child: Image.network(
+                      //       _user!.profilePic!,
+                      //       fit: BoxFit.cover,
+                      //     ),
+                      //   )
+                      // : CircleAvatar(
+                      //     radius: 50,
+                      //     backgroundColor: const Color(0xFF2A2A2A),
+                      //     child: Text(
+                      //       (_user?.name?.isNotEmpty ?? false)
+                      //           ? _user!.name![0].toUpperCase()
+                      //           : '?',
+                      //       style: const TextStyle(
+                      //         color: Colors.white,
+                      //         fontSize: 40,
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //     ),
+                      //   ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF4CAF50),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              label: 'Full Name',
+              controller: _fullNameController,
+              required: true,
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              label: 'Username',
+              controller: _usernameController,
+              required: true,
+              helperText: 'Only lowercase letters, numbers, and underscores',
+            ),
+            const SizedBox(height: 32),
+            _buildTextField(
+              label: 'Email',
+              controller: _emailController,
+              required: true,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              label: 'Phone',
+              controller: _phoneController,
+              required: true,
+              keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              label: 'Bio / Short Intro',
+              controller: _bioController,
+              maxLines: 5,
+              maxLength: 160,
+              hintText:
+                  'Tell us about yourself... (e.g., Full-stack developer passionate about open source)',
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Tech Stack / Skills',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: _selectedSkills
+                  .map(
+                    (skill) => SkillChip(
+                      label: skill,
+                      onRemove: () => _removeSkill(skill),
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _customSkillController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Add custom skill...',
+                      hintStyle: const TextStyle(color: Colors.white38),
+                      filled: true,
+                      fillColor: const Color(0xFF1A1A1A),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: _addCustomSkill,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4CAF50),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Add',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Social Links',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            SocialLinkField(
+              icon: Icons.code, // GitHub icon
+              iconColor: const Color(0xFF4CAF50),
+              controller: _githubController,
+              hintText: 'GitHub URL',
+              keyboardType: TextInputType.url,
+              backgroundColor: const Color(0xFF1A2E1A),
+            ),
+            const SizedBox(height: 12),
+
+            SocialLinkField(
+              icon: Icons.camera_alt_outlined, // Instagram icon
+              iconColor: const Color(0xFFE4405F),
+              controller: _instagramController,
+              hintText: 'Instagram URL',
+              keyboardType: TextInputType.url,
+              backgroundColor: const Color(0xFF2E0A1A),
+            ),
+            const SizedBox(height: 12),
+
+            SocialLinkField(
+              icon: Icons.work_outline, // LinkedIn icon
+              iconColor: const Color(0xFF0A66C2),
+              controller: _linkedinController,
+              hintText: 'LinkedIn URL',
+              keyboardType: TextInputType.url,
+              backgroundColor: const Color(0xFF0A1929),
+            ),
+            const SizedBox(height: 12),
+
+            SocialLinkField(
+              icon: Icons.link, // Portfolio link
+              iconColor: const Color(0xFF6B7280),
+              controller: _portfolioController,
+              hintText: 'Portfolio URL',
+              keyboardType: TextInputType.url,
+              backgroundColor: const Color(0xFF1A1A1A),
+            ),
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2A1F0A),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFF6B5A2E), width: 1),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline,
+                    color: Color(0xFFFFB020),
+                    size: 20,
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'You can always update your profile later',
+                      style: TextStyle(color: Color(0xFFFFB020), fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: addUserDetails,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4CAF50),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Complete Profile',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await _googleAuthServices.signOut();
+
+                  // Navigate to SignInScreen and remove all routes
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SignInScreen(),
+                    ),
+                    (route) => false,
+                  );
+                  showAnimatedSnackBar(context, "Logged out successfully");
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Logout',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    bool required = false,
+    int maxLines = 1,
+    int? maxLength,
+    String? hintText,
+    String? helperText,
+    TextInputType? keyboardType,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+            if (required)
+              const Text(
+                ' *',
+                style: TextStyle(fontSize: 16, color: Colors.red),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          maxLength: maxLength,
+          keyboardType: keyboardType,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: const TextStyle(color: Colors.white38),
+            helperText: helperText,
+            helperStyle: const TextStyle(color: Colors.white38, fontSize: 12),
+            filled: true,
+            fillColor: const Color(0xFF1A1A1A),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
+            counterStyle: const TextStyle(color: Colors.white38),
+          ),
+        ),
+      ],
+    );
+  }
+}
