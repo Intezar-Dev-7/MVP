@@ -40,54 +40,54 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
   }
 
-  Future<void> createPost() async {
+  // Create new post fucntion
+  Future<void> createUserPost() async {
     if (isPosting) return;
 
-    setState(() => isPosting = true);
-
+    // Validation
     if (titleController.text.trim().isEmpty) {
       showAnimatedSnackBar(context, "Title is required");
-      setState(() => isPosting = false);
       return;
     }
 
     if (descriptionController.text.trim().isEmpty && selectedImages.isEmpty) {
       showAnimatedSnackBar(context, "Add a description or at least 1 image");
-      setState(() => isPosting = false);
       return;
     }
 
-    final response = await PostServices().createPost(
-      context: context,
-      title: titleController.text.trim(), // ✅ NEW
-      description: descriptionController.text.trim(),
-      githubUrl: githubController.text.trim().isEmpty
-          ? null
-          : githubController.text.trim(),
-      liveDemoUrl: liveDemoController.text.trim().isEmpty
-          ? null
-          : liveDemoController.text.trim(),
-      images: selectedImages,
-    );
+    setState(() => isPosting = true);
 
-    setState(() => isPosting = false);
-
-    if (response['success'] == true) {
-      setState(() {
-        selectedImages.clear();
-        titleController.clear(); // ✅ clear title
-        descriptionController.clear();
-        githubController.clear();
-        liveDemoController.clear();
-      });
-
-      showAnimatedSnackBar(context, "Post created successfully!");
-      Navigator.pop(context);
-    } else {
-      showAnimatedSnackBar(
-        context,
-        response['message'] ?? "Something went wrong",
+    try {
+      await PostServices().createPost(
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        githubUrl: githubController.text.trim().isEmpty
+            ? null
+            : githubController.text.trim(),
+        liveDemoUrl: liveDemoController.text.trim().isEmpty
+            ? null
+            : liveDemoController.text.trim(),
+        images: selectedImages,
       );
+
+      if (!mounted) return;
+
+      // Clear state
+      selectedImages.clear();
+      titleController.clear();
+      descriptionController.clear();
+      githubController.clear();
+      liveDemoController.clear();
+
+      setState(() => isPosting = false);
+
+      showAnimatedSnackBar(context, "Post created successfully");
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() => isPosting = false);
+      showAnimatedSnackBar(context, e.toString());
     }
   }
 
@@ -109,7 +109,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: isPosting ? null : createPost,
+            onPressed: isPosting ? null : createUserPost,
             child: isPosting
                 ? CircularProgressIndicator(color: Colors.green)
                 : Text("Post"),

@@ -16,7 +16,7 @@ class _ProjectsSectionState extends State<ProjectsSection> {
   @override
   void initState() {
     super.initState();
-    _postsFuture = PostServices().fetchUsersPosts(context: context);
+    _postsFuture = PostServices().fetchUsersPosts();
   }
 
   @override

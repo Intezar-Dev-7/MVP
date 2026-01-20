@@ -81,24 +81,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // Function to add user details
   Future<void> addUserDetails() async {
-    await _editProfileServices.editUserProfile(
-      context: context,
-      fullName: _fullNameController.text,
-      username: _usernameController.text,
-      userPhoneNumber: _phoneController.text,
-      userBio: _bioController.text,
-      profilePic: _pickedProfileImage,
-      techStack: _selectedSkills,
-      socialLinks: SocialLinks(
-        github: _githubController.text.trim(),
-        instagram: _instagramController.text.trim(),
-        linkedin: _linkedinController.text.trim(),
-        portfolio: _portfolioController.text.trim(),
-      ),
-    );
+    try {
+      await _editProfileServices.editUserProfile(
+        fullName: _fullNameController.text.trim(),
+        username: _usernameController.text.trim(),
+        userPhoneNumber: _phoneController.text.trim(),
+        userBio: _bioController.text.trim(),
+        profilePic: _pickedProfileImage,
+        techStack: _selectedSkills,
+        socialLinks: SocialLinks(
+          github: _githubController.text.trim(),
+          instagram: _instagramController.text.trim(),
+          linkedin: _linkedinController.text.trim(),
+          portfolio: _portfolioController.text.trim(),
+        ),
+      );
+
+      if (!mounted) return;
+
+      showAnimatedSnackBar(context, "Profile updated successfully");
+    } catch (e) {
+      if (!mounted) return;
+
+      showAnimatedSnackBar(context, e.toString());
+    }
   }
 
-  // Fetching user form the backend to name , email , and profile pic of the user
+  // Fetching user from the backend to load  name , email , and profile pic of the user
   @override
   void initState() {
     super.initState();
@@ -106,24 +115,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _loadUserFromBackend() async {
-    final user = await _editProfileServices.getMyProfileDetails(
-      context: context,
-    );
+    try {
+      final user = await _editProfileServices.getMyProfileDetails();
 
-    if (user == null) return;
+      if (!mounted) return; // 🔑 THIS IS NON-NEGOTIABLE
+      setState(() {
+        _fullNameController.text = user.fullName ?? "";
+        _emailController.text = user.email ?? "";
+        _usernameController.text = user.username ?? "";
+        _phoneController.text = user.userPhoneNumber ?? "";
+        _bioController.text = user.userBio ?? "";
 
-    setState(() {
-      _fullNameController.text = user.fullName ?? "";
-      _emailController.text = user.email ?? "";
-      _usernameController.text = user.username ?? "";
-      _phoneController.text = user.userPhoneNumber ?? "";
-      _bioController.text = user.userBio ?? "";
+        _selectedSkills.clear();
+        _selectedSkills.addAll(user.techStack ?? []);
 
-      _selectedSkills.clear();
-      _selectedSkills.addAll(user.techStack ?? []);
-
-      _firebaseProfilePic = user.profilePic; // from DB
-    });
+        _firebaseProfilePic = user.profilePic; // from DB
+      });
+    } catch (e) {
+      if (!mounted) return;
+      showAnimatedSnackBar(context, e.toString());
+    }
   }
 
   @override

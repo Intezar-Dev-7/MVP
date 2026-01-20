@@ -9,6 +9,7 @@ import 'package:gitgossip/features/userProfile/models/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
+// Services return data or throw errors. UI decides how to display them.
 class Editprofileservices {
   // Function to add or update user Details // Edit user profile
   Future<void> editUserProfile({
@@ -21,15 +22,12 @@ class Editprofileservices {
 
     required List<String?> techStack,
     required SocialLinks? socialLinks,
-
-    required BuildContext context,
   }) async {
     try {
       final firebaseUser = FirebaseAuth.instance.currentUser;
 
       if (firebaseUser == null) {
-        showAnimatedSnackBar(context, "User Not Logged In");
-        return;
+        throw Exception("User not logged in");
       }
 
       final token = await firebaseUser.getIdToken();
@@ -61,42 +59,31 @@ class Editprofileservices {
       final response = await request.send();
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        showAnimatedSnackBar(context, "Unable to update profile");
-      } else {
-        showAnimatedSnackBar(context, "User Profile Updated Successfully");
+        throw Exception("Unable to update profile");
       }
     } catch (e) {
-      showAnimatedSnackBar(context, e.toString());
-      rethrow;
+      print("$e");
     }
   }
 
   // Fetch user details
-  Future<UserModel?> getMyProfileDetails({
-    required BuildContext context,
-  }) async {
-    try {
-      final firebaseUser = FirebaseAuth.instance.currentUser;
+  Future<UserModel> getMyProfileDetails() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
 
-      if (firebaseUser == null) return null;
+    if (firebaseUser == null) throw Exception("User not logged in");
 
-      final token = await firebaseUser.getIdToken();
+    final token = await firebaseUser.getIdToken();
 
-      final res = await http.get(
-        Uri.parse('$baseUrl/user/getUserDetails'),
-        headers: {"Authorization": "Bearer $token"},
-      );
+    final res = await http.get(
+      Uri.parse('$baseUrl/user/getUserDetails'),
+      headers: {"Authorization": "Bearer $token"},
+    );
 
-      if (res.statusCode != 200) {
-        showAnimatedSnackBar(context, "Failed to fetch profile");
-        return null;
-      }
-
-      final data = jsonDecode(res.body);
-      return UserModel.fromJson(data["user"]);
-    } catch (e) {
-      showAnimatedSnackBar(context, e.toString());
-      return null;
+    if (res.statusCode != 200) {
+      throw Exception("Failed to fetch profile");
     }
+
+    final data = jsonDecode(res.body);
+    return UserModel.fromJson(data["user"]);
   }
 }

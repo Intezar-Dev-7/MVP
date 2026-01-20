@@ -2,6 +2,7 @@
 import newUser from "../models/userModel.js";
 export const saveUser = async (req, res) => {
     try {
+        console.log("I am here 1");
         const { uid, name, email, picture } = req.user;
 
         if (!uid) {
@@ -28,7 +29,7 @@ export const saveUser = async (req, res) => {
             { upsert: true, new: true }
         );
 
-
+        console.log("reached here ");
         return res.status(200).json({
             success: true,
             user: {

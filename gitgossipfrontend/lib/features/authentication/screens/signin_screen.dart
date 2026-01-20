@@ -40,7 +40,7 @@ class _SignInScreenState extends State<SignInScreen> {
       }
 
       // Send token to backend to save user
-      await authServices.saveUserToBackend(context: context, token: token);
+      await authServices.saveUserToBackend(token: token);
 
       // After backend call, widget might have been disposed, check again
       if (!mounted) return;
