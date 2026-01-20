@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
         /**
          * User's display name
          */
-        name: {
+        fullName: {
             type: String,
             trim: true,
         },
@@ -64,7 +64,7 @@ const userSchema = new mongoose.Schema(
         /**
          * Short user bio
          */
-        bio: {
+        userBio: {
             type: String,
             sparse: true,
             trim: true,
@@ -78,7 +78,7 @@ const userSchema = new mongoose.Schema(
         },
 
         /** 🔥 NEW: Skills */
-        skills: {
+        techStack: {
             type: [String],
             default: [],
             index: true,

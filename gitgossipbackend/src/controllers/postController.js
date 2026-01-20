@@ -6,7 +6,7 @@ import newUser from "../models/userModel.js";
 
 export const createPost = async (req, res) => {
     try {
-        const { description, githubUrl, liveDemoUrl } = req.body;
+        const { postDescription, githubUrl, liveDemoUrl } = req.body;
 
         const authorUid = req.user.uid;
         console.log("Firebase UID:", authorUid);
@@ -46,7 +46,7 @@ export const createPost = async (req, res) => {
             authorUid,
             name: user.name, // ✅ NOW DEFINED
             userProfileImage,
-            caption: description,
+            caption: postDescription,
             imageUrls: uploadedImages,
             githubUrl,
             liveDemoUrl,

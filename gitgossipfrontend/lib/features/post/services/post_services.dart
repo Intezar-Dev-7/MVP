@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 class PostServices {
   Future<Map<String, dynamic>> createPost({
+    required BuildContext context,
     required String title,
     required String description,
     String? githubUrl,

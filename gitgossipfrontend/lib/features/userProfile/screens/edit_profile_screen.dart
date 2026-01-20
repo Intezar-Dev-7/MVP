@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gitgossip/core/widgets/custom_snack_bar.dart';
 import 'package:gitgossip/features/authentication/screens/signin_screen.dart';
@@ -16,6 +18,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  String? _firebaseProfilePic;
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -45,24 +48,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _portfolioController.dispose();
     super.dispose();
   }
-
-  @override
-  void initState() {
-    super.initState();
-    // _loadUserDetails();
-  }
-
-  // Future<void> _loadUserDetails() async {
-  //   final mongoUser = await _editProfileServices.getMyProfileData(
-  //     context: context,
-  //   );
-  //   final fbUser = FirebaseAuth.instance.currentUser;
-
-  //   setState(() {
-  //     _user = mongoUser;
-  //     _nameController.text = mongoUser.name ?? fbUser?.email ?? "";
-  //   });
-  // }
 
   void _addCustomSkill() {
     if (_customSkillController.text.isNotEmpty) {
@@ -97,6 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // Function to add user details
   Future<void> addUserDetails() async {
     await _editProfileServices.editUserProfile(
+      context: context,
       fullName: _fullNameController.text,
       username: _usernameController.text,
       userPhoneNumber: _phoneController.text,
@@ -109,8 +95,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         linkedin: _linkedinController.text.trim(),
         portfolio: _portfolioController.text.trim(),
       ),
+    );
+  }
+
+  // Fetching user form the backend to name , email , and profile pic of the user
+  @override
+  void initState() {
+    super.initState();
+    _loadUserFromBackend();
+  }
+
+  Future<void> _loadUserFromBackend() async {
+    final user = await _editProfileServices.getMyProfileDetails(
       context: context,
     );
+
+    if (user == null) return;
+
+    setState(() {
+      _fullNameController.text = user.fullName ?? "";
+      _emailController.text = user.email ?? "";
+      _usernameController.text = user.username ?? "";
+      _phoneController.text = user.userPhoneNumber ?? "";
+      _bioController.text = user.userBio ?? "";
+
+      _selectedSkills.clear();
+      _selectedSkills.addAll(user.techStack ?? []);
+
+      _firebaseProfilePic = user.profilePic; // from DB
+    });
   }
 
   @override
@@ -156,36 +169,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           width: 2,
                         ),
                       ),
-                      // child: _pickedProfileImage != null
-                      // ? ClipOval(
-                      //     child: Image.file(
-                      //       File(_pickedProfileImage!.path),
-                      //       width: 120,
-                      //       height: 120,
-                      //       fit: BoxFit.cover,
-                      //     ),
-                      //   )
-                      // : _user?.profilePic != null
-                      // ? ClipOval(
-                      //     child: Image.network(
-                      //       _user!.profilePic!,
-                      //       fit: BoxFit.cover,
-                      //     ),
-                      //   )
-                      // : CircleAvatar(
-                      //     radius: 50,
-                      //     backgroundColor: const Color(0xFF2A2A2A),
-                      //     child: Text(
-                      //       (_user?.name?.isNotEmpty ?? false)
-                      //           ? _user!.name![0].toUpperCase()
-                      //           : '?',
-                      //       style: const TextStyle(
-                      //         color: Colors.white,
-                      //         fontSize: 40,
-                      //         fontWeight: FontWeight.bold,
-                      //       ),
-                      //     ),
-                      //   ),
+                      child: _pickedProfileImage != null
+                          ? ClipOval(
+                              child: Image.file(
+                                File(_pickedProfileImage!.path),
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : _firebaseProfilePic != null
+                          ? ClipOval(
+                              child: Image.network(
+                                _firebaseProfilePic!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : const Icon(Icons.person, size: 50),
                     ),
                   ),
                   Positioned(

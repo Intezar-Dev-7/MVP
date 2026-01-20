@@ -12,7 +12,20 @@
           "package_name": "com.example.gitgossip"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "586335171290-g9gqogv3usqmhdthbh3h2e2ee0ipjgnk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gitgossip",
+            "certificate_hash": "7d6f478a770274a889f8aa7ad1a0244183c60971"
+          }
+        },
+        {
+          "client_id": "586335171290-r5980411f0f516ggormng4rtjk62ognu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDPmWQTCUEAy4khDgqhrgdoFn5MyHvdxCw"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586335171290-r5980411f0f516ggormng4rtjk62ognu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "586335171290-91u419uik7dj9glp24e9u6gp9891qgpi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gitgossip"
+              }
+            }
+          ]
         }
       }
     }

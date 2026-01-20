@@ -44,7 +44,7 @@ const newPostSchema = new mongoose.Schema(
         /**
          * Post description / caption
          */
-        description: {
+        postDescription: {
             type: String,
             default: "",
             trim: true,

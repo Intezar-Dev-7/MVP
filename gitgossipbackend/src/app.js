@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 import { ConnectDB } from "./config/db.js";
 import authRouter from "./routes/authRoute.js";
 import postRouter from "./routes/postRoute.js";
-
+// import userRouter from "./routes/userRoute.js";
 
 dotenv.config();
 const app = express();
@@ -26,6 +26,7 @@ app.get('/health', (req, res) => {
 
 app.use(postRouter);
 app.use(authRouter);
+// app.use(userRouter);
 
 
 export default app;

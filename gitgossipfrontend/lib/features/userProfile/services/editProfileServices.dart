@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gitgossip/core/config/api.dart';
 import 'package:gitgossip/core/widgets/custom_snack_bar.dart';
 import 'package:gitgossip/features/userProfile/models/social_links_model.dart';
+import 'package:gitgossip/features/userProfile/models/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
@@ -60,10 +61,10 @@ class Editprofileservices {
       final response = await request.send();
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        throw Exception("Unable to update profile");
+        showAnimatedSnackBar(context, "Unable to update profile");
+      } else {
+        showAnimatedSnackBar(context, "User Profile Updated Successfully");
       }
-
-      showAnimatedSnackBar(context, "User Profile Updated Successfully");
     } catch (e) {
       showAnimatedSnackBar(context, e.toString());
       rethrow;
@@ -71,13 +72,31 @@ class Editprofileservices {
   }
 
   // Fetch user details
-  Future<void> getMyProfileDetails({required BuildContext context}) async {
-    final firebaseUser = FirebaseAuth.instance.currentUser;
+  Future<UserModel?> getMyProfileDetails({
+    required BuildContext context,
+  }) async {
+    try {
+      final firebaseUser = FirebaseAuth.instance.currentUser;
 
-    if (firebaseUser == null) {
-      showAnimatedSnackBar(context, "User Not Logged In");
+      if (firebaseUser == null) return null;
+
+      final token = await firebaseUser.getIdToken();
+
+      final res = await http.get(
+        Uri.parse('$baseUrl/user/getUserDetails'),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      if (res.statusCode != 200) {
+        showAnimatedSnackBar(context, "Failed to fetch profile");
+        return null;
+      }
+
+      final data = jsonDecode(res.body);
+      return UserModel.fromJson(data["user"]);
+    } catch (e) {
+      showAnimatedSnackBar(context, e.toString());
+      return null;
     }
-
-    final firebaseToken = await firebaseUser?.getIdToken();
   }
 }

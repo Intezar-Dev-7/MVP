@@ -58,6 +58,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
 
     final response = await PostServices().createPost(
+      context: context,
       title: titleController.text.trim(), // ✅ NEW
       description: descriptionController.text.trim(),
       githubUrl: githubController.text.trim().isEmpty

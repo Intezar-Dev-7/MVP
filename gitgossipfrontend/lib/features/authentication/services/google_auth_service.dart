@@ -13,7 +13,7 @@ class GoogleAuthServices {
   /// Signs in the user with Google and returns the authenticated Firebase [User].
   ///
   /// Returns `null` if the sign-in process is canceled or fails.
-  Future<User?> signInWithGoogle() async {
+  Future<String?> signInWithGoogleAndGetToken() async {
     try {
       // Trigger the Google Sign-In flow.
       final googleUser = await _googleSignIn.signIn();
@@ -33,8 +33,10 @@ class GoogleAuthServices {
       // Sign in to Firebase with the Google credential.
       final userCredential = await _auth.signInWithCredential(credential);
 
+      final user = userCredential.user;
+      if (user == null) return null;
       // Return the authenticated user.
-      return userCredential.user;
+      return await user.getIdToken();
     } catch (e) {
       // Print the error and return null if an exception occurs.
       print("Sign-in error: $e");

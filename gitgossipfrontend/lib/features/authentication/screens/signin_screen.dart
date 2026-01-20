@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gitgossip/core/widgets/custom_snack_bar.dart';
+import 'package:gitgossip/features/authentication/services/auth_services.dart';
 import 'package:gitgossip/features/authentication/services/google_auth_service.dart';
-
 import 'package:gitgossip/features/authentication/widgets/signin_buttons.dart';
 
+/// Screen that allows the user to sign in using Google or GitHub.
+/// Currently, only Google sign-in is implemented.
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -12,20 +15,42 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final GoogleAuthServices _googleAuthServices = GoogleAuthServices();
-  bool _isSigningIn = false;
+  final GoogleAuthServices googleAuthServices = GoogleAuthServices();
+  final AuthServices authServices = AuthServices();
 
-  Future<void> _handleGoogleSignIn() async {
-    if (_isSigningIn) return;
+  /// Tracks whether a sign-in process is ongoing
+  bool _isLoading = false;
 
-    _isSigningIn = true;
+  /// Handles Google sign-in and sending the token to the backend
+  Future<void> _login() async {
+    // If widget is already disposed, don't start
+    if (!mounted) return;
+
+    // Set loading state
+    setState(() => _isLoading = true);
     try {
-      await _googleAuthServices.signInWithGoogle();
-    } catch (e, s) {
-      debugPrint("Google Sign In failed");
-      debugPrint("$s");
+      // Attempt to sign in with Google
+      final String? token = await googleAuthServices
+          .signInWithGoogleAndGetToken();
+
+      if (token == null) {
+        // If token is null, login failed
+        showAnimatedSnackBar(context, "Google sign-in failed");
+        return;
+      }
+
+      // Send token to backend to save user
+      await authServices.saveUserToBackend(context: context, token: token);
+
+      // After backend call, widget might have been disposed, check again
+      if (!mounted) return;
+    } catch (e) {
+      // Catch any unexpected errors
+      showAnimatedSnackBar(context, "An error occurred: $e");
+      print("Login error: $e");
     } finally {
-      _isSigningIn = false;
+      // Ensure we only call setState if widget is still mounted
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -40,6 +65,7 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Title
                 const Text(
                   'Sign in to continue',
                   style: TextStyle(
@@ -48,28 +74,40 @@ class _SignInScreenState extends State<SignInScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 8),
+
+                // Subtitle
                 const Text(
                   'Choose your preferred sign-in method',
                   style: TextStyle(color: Colors.white70),
                 ),
+
                 const SizedBox(height: 32),
 
+                // Google sign-in button
                 SignInButton(
                   icon: FontAwesomeIcons.google,
-                  label: 'Sign in with Google',
-                  onPressed: _handleGoogleSignIn,
+                  label: _isLoading ? 'Signing in...' : 'Sign in with Google',
+                  onPressed: _isLoading
+                      ? null
+                      : _login, // disable during loading
                 ),
 
                 const SizedBox(height: 16),
 
+                // GitHub sign-in button (disabled for now)
                 SignInButton(
                   icon: FontAwesomeIcons.github,
-                  label: 'Sign in with GitHub',
-                  onPressed: () {}, // later
+                  label: 'Sign in with GitHub (Coming Soon)',
+                  onPressed: null, // disabled
                 ),
 
-                const SizedBox(height: 120),
+                const SizedBox(height: 40),
+
+                // Optional: Loading indicator below buttons
+                if (_isLoading)
+                  const CircularProgressIndicator(color: Colors.white),
               ],
             ),
           ),

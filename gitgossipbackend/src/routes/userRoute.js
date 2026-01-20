@@ -1,6 +1,7 @@
 import verifyFirebaseToken from "../middlewares/verifyFirebaseToken";
 
 
-const userRoute = express.Router();
+const userRouter = express.Router();
 
-userRoute.patch("/user/updateUser", verifyFirebaseToken, updateUser);
+userRouter.patch("/user/updateUser", verifyFirebaseToken, updateUser);
+userRouter.patch("/user/getUserDetails", verifyFirebaseToken, getUserDetails);
