@@ -41,7 +41,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       // Send token to backend to save user
       await authServices.saveUserToBackend(token: token);
-
+      showAnimatedSnackBar(context, "Logged In Sucessfull");
       // After backend call, widget might have been disposed, check again
       if (!mounted) return;
     } catch (e) {

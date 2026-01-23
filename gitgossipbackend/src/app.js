@@ -24,9 +24,9 @@ app.get('/health', (req, res) => {
     res.send('GitGossip Auth Backend Is Running');
 });
 
-app.use(postRouter);
-app.use(authRouter);
-// app.use(userRouter);
+app.use("/posts", postRouter);
+app.use("/auth", authRouter);
+// app.use("/user", userRouter);
 
 
 export default app;

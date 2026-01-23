@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:gitgossip/core/config/api.dart';
-import 'package:gitgossip/core/widgets/custom_snack_bar.dart';
 import 'package:gitgossip/features/userProfile/models/social_links_model.dart';
 import 'package:gitgossip/features/userProfile/models/user_model.dart';
 import 'package:http/http.dart' as http;

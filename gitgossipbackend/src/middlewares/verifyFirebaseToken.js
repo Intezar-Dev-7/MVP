@@ -3,9 +3,11 @@ import admin from "../services/firebaseAdmin.js";
 
 const verifyFirebaseToken = async (req, res, next) => {
     try {
+        console.log("🛡️ AUTH MIDDLEWARE HIT");
         // This line of code only reads the token
         const authHeader = req.headers.authorization;
 
+        console.log("AUTH HEADER:", req.headers.authorization);
 
         // Chechking if the header exists and follows Bearer schema 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -21,7 +23,7 @@ const verifyFirebaseToken = async (req, res, next) => {
 
         // Normalize auth context
         req.user = {
-            uid: decoded.uid,
+            uid: decodedToken.uid,
             email: decodedToken.email || null,
             name: decodedToken.name || null,
             picture: decodedToken.picture || null,
@@ -33,6 +35,8 @@ const verifyFirebaseToken = async (req, res, next) => {
         next();
     } catch (error) {
         console.error("Auth error:", error.code || error.message);
+        console.log("AUTH USER:", req.user);
+
         return res.status(401).json({ message: "Unauthorized" });
     }
 };

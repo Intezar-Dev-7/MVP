@@ -8,7 +8,7 @@ import { createPost, getUserPosts } from "../controllers/postController.js";
 const postRouter = express.Router();
 
 postRouter.post(
-    "/posts/createNewPost",
+    "/createNewPost",
     verifyFirebaseToken,
     upload.array("images", 5), // MAX 5 images
     createPost
@@ -16,7 +16,7 @@ postRouter.post(
 
 
 postRouter.get(
-    "/posts/getUserPosts",
+    "/getUserPosts",
     verifyFirebaseToken, getUserPosts
 );
 

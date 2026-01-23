@@ -6,6 +6,6 @@ import { saveUser } from "../controllers/authController.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/auth/saveUser", verifyFirebaseToken, saveUser);
+authRouter.post("/saveUser", verifyFirebaseToken, saveUser);
 
 export default authRouter;

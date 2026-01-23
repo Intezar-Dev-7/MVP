@@ -12,10 +12,10 @@ class AuthServices {
         },
       );
       if (response.statusCode == 200) {
-        throw Exception("Sucessfully Added User to MongoDB");
+        print("User successfully saved to MongoDB");
       } else {
         print("BACKEND RESPONSE ${response.body}");
-        throw Exception("Something went wrong");
+        throw Exception("Failed to save user");
       }
     } catch (e) {
       print("server error $e");
