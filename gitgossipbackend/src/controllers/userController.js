@@ -1,21 +1,22 @@
 
 
-import newUser from "../models/userModel.js";
 import cloudinary from "../config/cloudinary.js";
+import User from "../models/userModel.js";
 
 // PATCH /user/updateUserDetails
 export const updateUserDetails = async (req, res) => {
     try {
-        const firebaseUid = req.user.uid;
+        console.log("Update user Details hit");
+        const firebaseUid = req.user.firebaseUid;
 
         const { fullName, username, userPhoneNumber, userBio, techStack, socialLinks } = req.body;
 
-        const user = await newUser.findOne({ firebaseUid });
+        const user = await User.findOne({ firebaseUid });
         if (!user) return res.status(404).json({ message: "User not found" });
 
         // ---------- USERNAME CHECK ----------
         if (username && username !== user.username) {
-            const existingUser = await newUser.findOne({ username });
+            const existingUser = await User.findOne({ username });
             if (existingUser) return res.status(409).json({ message: "Username already taken" });
             user.username = username;
         }
@@ -51,7 +52,7 @@ export const updateUserDetails = async (req, res) => {
         }
 
         await user.save();
-
+        console.log("success");
         return res.status(200).json({
             message: "Profile updated successfully",
             user,
@@ -65,11 +66,11 @@ export const updateUserDetails = async (req, res) => {
 // GET /user/me
 export const getUserDetails = async (req, res) => {
     try {
-        const firebaseUid = req.user.uid;
+        const firebaseUid = req.user.firebaseUid;
 
-        const user = await newUser.findOne({ firebaseUid });
+        const user = await User.findOne({ firebaseUid });
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
-
+        console.log("get user details :");
         return res.status(200).json({ success: true, data: user });
     } catch (error) {
         console.error(error);

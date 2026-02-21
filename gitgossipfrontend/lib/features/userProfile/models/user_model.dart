@@ -9,7 +9,7 @@ class UserModel {
 
   final String? fullName;
   final String? username;
-  final String? email;
+  final String email;
 
   /// Stored as String to support country codes (+91, etc.)
   final String? userPhoneNumber;
@@ -28,7 +28,7 @@ class UserModel {
     required this.firebaseUid,
     this.fullName,
     this.username,
-    this.email,
+    required this.email,
     this.userPhoneNumber,
     this.userBio,
     this.profilePic,
@@ -42,7 +42,7 @@ class UserModel {
   // ---------- FROM JSON ----------
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['_id'] ?? json['id'],
+      id: json['_id'],
       firebaseUid: json['firebaseUid'],
       fullName: json['fullName'],
       username: json['username'],
@@ -71,7 +71,7 @@ class UserModel {
     return {
       "_id": id,
       "firebaseUid": firebaseUid,
-      "name": fullName,
+      "fullName": fullName,
       "username": username,
       "email": email,
       "userPhoneNumber": userPhoneNumber,
@@ -79,8 +79,6 @@ class UserModel {
       "profilePic": profilePic,
       'techStack': techStack,
       "socialLinks": socialLinks?.toJson(),
-      "createdAt": createdAt?.toIso8601String(),
-      "updatedAt": updatedAt?.toIso8601String(),
     };
   }
 
@@ -95,6 +93,7 @@ class UserModel {
     String? userBio,
     String? profilePic,
     List<String>? techStack, // ✅ Corrected
+    SocialLinks? socialLinks,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -108,6 +107,7 @@ class UserModel {
       userBio: userBio ?? this.userBio,
       profilePic: profilePic ?? this.profilePic,
       techStack: techStack ?? this.techStack,
+      socialLinks: socialLinks ?? this.socialLinks,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

@@ -15,8 +15,10 @@ class GoogleAuthServices {
   /// Returns `null` if the sign-in process is canceled or fails.
   Future<String?> signInWithGoogleAndGetToken() async {
     try {
-      // Trigger the Google Sign-In flow.
+      print("Trigger the Google Sign-In flow");
       final googleUser = await _googleSignIn.signIn();
+
+      print("✅ Google sign-in success");
 
       // User canceled the sign-in.
       if (googleUser == null) return null;
@@ -35,8 +37,11 @@ class GoogleAuthServices {
 
       final user = userCredential.user;
       if (user == null) return null;
+
+      final token = await user.getIdToken();
+      print("✅ Token received: ${token?.substring(0, 20)}...");
       // Return the authenticated user.
-      return await user.getIdToken();
+      return token;
     } catch (e) {
       // Print the error and return null if an exception occurs.
       print("Sign-in error: $e");

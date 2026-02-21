@@ -10,7 +10,7 @@ const newPostSchema = new mongoose.Schema(
         /**
          * Firebase UID of the author
          */
-        authorUid: {
+        firebaseUid: {
             type: String,
             required: true,
             index: true,
@@ -104,6 +104,6 @@ const newPostSchema = new mongoose.Schema(
 
 
 
-const newPost = mongoose.model("newPost", newPostSchema);
+const Post = mongoose.model("Post", newPostSchema);
 
-export default newPost;
+export default Post;

@@ -1,67 +1,38 @@
 
-import newUser from "../models/userModel.js";
+import User from "../models/userModel.js";
+
 
 export const saveUser = async (req, res) => {
     console.log("🔥 SAVE USER CONTROLLER HIT");
+    console.log("REQ.USER:", req.user);
 
     try {
-        console.log("I am here 1");
-        console.log("req.user:", req.user);
-        const { uid, fullName, email, profilePic } = req.user;
+        const { firebaseUid, email, fullName, profilePic } = req.user;
 
-        if (!uid) {
+        if (!firebaseUid) {
             return res.status(401).json({ message: "Invalid Firebase token" });
         }
-
-        const user = await newUser.findOneAndUpdate(
-            { firebaseUid: req.user.uid },
+        const user = await User.findOneAndUpdate(
+            { firebaseUid: firebaseUid },
             {
-                // LEFT → MongoDB schema field name
-                // RIGHT → Runtime value coming from your app / Firebase / request
                 $setOnInsert: {
-                    firebaseUid: req.user.uid,
-                    email: req.user.email,
-                    fullName: req.user.name,
-                    profilePic: req.user.profilePic,
-                    provider: req.user.provider,
-                    createdAt: new Date(),
+                    firebaseUid,
+                    email,
+                    fullName,
+                    profilePic,
                 },
             },
             { upsert: true, new: true }
         );
 
-        // const user = await newUser.findOneAndUpdate(
-        //     { firebaseUid: uid },
-        //     {
-        //         $setOnInsert: {
-        //             firebaseUid: uid,
-        //             email: email || null,        // initial sync
-        //             name: name || null,          // initial default ONLY
-        //             profilePic: picture || null, // initial default ONLY
-        //          
-        //             createdAt: new Date(),
-        //         },
-        //         $set: {
-        //             // only fields Firebase truly owns
-        //             ...(email && { email }),
-        //             updatedAt: new Date(),
-        //         },
-        //     },
-        //     { upsert: true, new: true }
-        // );
+        console.log("✅ USER SAVED OR FOUND:", user._id);
 
-        console.log("reached here ");
         return res.status(200).json({
             success: true,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                profilePic: user.profilePic,
-            },
+            user,
         });
     } catch (error) {
-        console.error("MongoDB Save Error:", error);
+        console.error("❌ MongoDB Save Error:", error);
         return res.status(500).json({ message: "Server error" });
     }
 };

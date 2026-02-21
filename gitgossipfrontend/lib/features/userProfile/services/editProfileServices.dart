@@ -22,6 +22,7 @@ class Editprofileservices {
     required SocialLinks? socialLinks,
   }) async {
     try {
+      print("📝 Starting profile update...");
       final firebaseUser = FirebaseAuth.instance.currentUser;
 
       if (firebaseUser == null) {
@@ -29,7 +30,7 @@ class Editprofileservices {
       }
 
       final token = await firebaseUser.getIdToken();
-
+      print("✅ Token obtained");
       final request = http.MultipartRequest(
         'PATCH',
         Uri.parse('$baseUrl/user/updateUserDetails'),
@@ -46,42 +47,52 @@ class Editprofileservices {
         techStack.whereType<String>().toList(),
       );
       request.fields['socialLinks'] = jsonEncode(socialLinks?.toJson());
-
+      print("📦 Request fields: ${request.fields}");
       // IMAGE
       if (profilePic != null) {
         request.files.add(
           await http.MultipartFile.fromPath('profilePic', profilePic.path),
         );
       }
-
+      print("🚀 Sending request to: $baseUrl/user/updateUserDetails");
       final response = await request.send();
+      // ✅ FIXED: Read the response body properly
+      final responseBody = await response.stream.bytesToString();
+
+      print("📡 Response status: ${response.statusCode}");
+      print("📡 Response body: $responseBody");
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        throw Exception("Unable to update profile");
+        throw Exception("Unable to update profile: $responseBody");
       }
+
+      print("✅ Updated successfully");
     } catch (e) {
       print("$e");
+      rethrow;
     }
   }
 
   // Fetch user details
   Future<UserModel> getMyProfileDetails() async {
+    print("1");
     final firebaseUser = FirebaseAuth.instance.currentUser;
 
     if (firebaseUser == null) throw Exception("User not logged in");
 
     final token = await firebaseUser.getIdToken();
 
-    final res = await http.get(
+    final response = await http.get(
       Uri.parse('$baseUrl/user/getUserDetails'),
       headers: {"Authorization": "Bearer $token"},
     );
 
-    if (res.statusCode != 200) {
+    print("PROFILE RESPONSE => ${response.body}");
+    if (response.statusCode != 200) {
       throw Exception("Failed to fetch profile");
     }
+    final data = jsonDecode(response.body);
 
-    final data = jsonDecode(res.body);
-    return UserModel.fromJson(data["user"]);
+    return UserModel.fromJson(data["data"]);
   }
 }

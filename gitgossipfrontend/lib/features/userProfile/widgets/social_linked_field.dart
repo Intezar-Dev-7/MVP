@@ -7,13 +7,14 @@ class SocialLinkField extends StatelessWidget {
   final TextEditingController controller;
   final Color backgroundColor;
   final TextInputType keyboardType; // new
-
+  final String? Function(String?)? validator;
   const SocialLinkField({
     super.key,
     required this.icon,
     required this.iconColor,
     required this.controller,
     required this.backgroundColor,
+    this.validator,
     this.hintText,
     this.keyboardType = TextInputType.text,
   });
@@ -39,14 +40,17 @@ class SocialLinkField extends StatelessWidget {
             child: Icon(icon, color: iconColor, size: 24),
           ),
           Expanded(
-            child: TextField(
+            child: TextFormField(
               controller: controller,
-              keyboardType: keyboardType, // use keyboardType here
+              keyboardType: keyboardType,
+              // use keyboardType here
+              validator: validator,
               style: const TextStyle(color: Colors.white70),
               decoration: InputDecoration(
                 hintText: hintText, // Use hintText here
                 hintStyle: const TextStyle(color: Colors.white38),
                 border: InputBorder.none,
+
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 16,

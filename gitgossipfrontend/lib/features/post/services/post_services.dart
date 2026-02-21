@@ -21,7 +21,7 @@ class PostServices {
     required List<XFile> images,
   }) async {
     // 1️⃣ Get Firebase ID Token
-    final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+    final token = await FirebaseAuth.instance.currentUser!.getIdToken();
 
     // 2️⃣ Upload images to backend (Cloudinary handled there)
     var request = http.MultipartRequest(
@@ -29,9 +29,10 @@ class PostServices {
       Uri.parse("$baseUrl/posts/createNewPost"),
     );
 
-    request.headers['Authorization'] = "Bearer $idToken";
+    request.headers['Authorization'] = "Bearer $token";
 
-    request.fields['description'] = description;
+    request.fields['title'] = title;
+    request.fields['postDescription'] = description;
     if (githubUrl != null) request.fields['githubUrl'] = githubUrl;
     if (liveDemoUrl != null) request.fields['liveDemoUrl'] = liveDemoUrl;
 
@@ -49,12 +50,12 @@ class PostServices {
 
   // Fetch user post
   Future<List<PostModel>> fetchUsersPosts() async {
-    final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+    final token = await FirebaseAuth.instance.currentUser!.getIdToken();
 
     final response = await http.get(
       Uri.parse("$baseUrl/posts/getUserPosts"),
       headers: {
-        "Authorization": "Bearer $idToken",
+        "Authorization": "Bearer $token",
         "Content-Type": "application/json",
       },
     );

@@ -1,20 +1,21 @@
 
 
-import newPost from "../models/postModel.js";
+
 import cloudinary from "../config/cloudinary.js";
-import newUser from "../models/userModel.js";
+import User from "../models/userModel.js";
+import Post from "../models/postModel.js";
 
 export const createPost = async (req, res) => {
     try {
-        const { postDescription, githubUrl, liveDemoUrl } = req.body;
+        const { title, description, githubUrl, liveDemoUrl } = req.body;
 
-        const authorUid = req.user.uid;
-        console.log("Firebase UID:", authorUid);
+        const firebaseUid = req.user.uid;
+        console.log("Firebase UID:", firebaseUid);
         // 7VUzAPnQwRdApghpWQ6gp0EvXWB2
 
 
         // 🔥 FETCH USER FROM DB
-        const user = await newUser.findOne({ firebaseUid: authorUid });
+        const user = await User.findOne({ firebaseUid: firebaseUid });
 
         console.log("User from DB:", user); // ✅ NOW VALID
 
@@ -22,7 +23,7 @@ export const createPost = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const userProfileImage = req.user.profileImage || null;
+
 
         let uploadedImages = [];
 
@@ -42,15 +43,16 @@ export const createPost = async (req, res) => {
             }
         }
 
-        const post = await newPost.create({
-            authorUid,
-            name: user.name, // ✅ NOW DEFINED
-            userProfileImage,
-            caption: postDescription,
-            imageUrls: uploadedImages,
+        const post = await Post.create({
+            firebaseUid,
+            username: user.username,
+            userProfilePic: user.profilePic,
+            title: title,
+            postDescription: description,
+            postImages: uploadedImages,
             githubUrl,
             liveDemoUrl,
-            tags: [],
+
         });
         console.log("1");
         return res.status(201).json({
@@ -75,9 +77,10 @@ export const createPost = async (req, res) => {
 
 export const getUserPosts = async (req, res) => {
     try {
-        const userUid = req.user.uid; // from Firebase middleware
+        const firebaseUid = req.user.uid;
 
-        const posts = await newPost.find({ authorUid: userUid })
+
+        const posts = await Post.find({ firebaseUid: firebaseUid })
             .sort({ createdAt: -1 });
 
         res.status(200).json(posts);

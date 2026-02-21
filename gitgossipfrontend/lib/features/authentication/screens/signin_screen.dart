@@ -21,35 +21,48 @@ class _SignInScreenState extends State<SignInScreen> {
   /// Tracks whether a sign-in process is ongoing
   bool _isLoading = false;
 
-  /// Handles Google sign-in and sending the token to the backend
+  // signin_screen.dart
   Future<void> _login() async {
-    // If widget is already disposed, don't start
     if (!mounted) return;
 
-    // Set loading state
     setState(() => _isLoading = true);
     try {
-      // Attempt to sign in with Google
-      final String? token = await googleAuthServices
-          .signInWithGoogleAndGetToken();
+      // Step 1: Google Sign-In
+      final token = await googleAuthServices.signInWithGoogleAndGetToken();
+      if (!mounted) return;
 
       if (token == null) {
-        // If token is null, login failed
-        showAnimatedSnackBar(context, "Google sign-in failed");
+        showAnimatedSnackBar(context, "Google sign-in failed or cancelled");
         return;
       }
 
-      // Send token to backend to save user
-      await authServices.saveUserToBackend(token: token);
-      showAnimatedSnackBar(context, "Logged In Sucessfull");
-      // After backend call, widget might have been disposed, check again
+      print("✅ Token received: ${token.substring(0, 20)}..."); // Debug log
+
       if (!mounted) return;
+
+      // Step 2: Save to Backend
+      try {
+        print("Sending Token to backend");
+        await authServices.saveUserToBackend(token: token);
+        if (!mounted) return;
+        showAnimatedSnackBar(context, "Logged in successfully");
+      } catch (backendError) {
+        if (!mounted) return;
+        // Specific error for backend failure
+        showAnimatedSnackBar(
+          context,
+          "Failed to save user to database: ${backendError.toString()}",
+        );
+        print("❌ Backend error: $backendError");
+        // Optionally sign out from Google if backend fails
+        await googleAuthServices.signOut();
+      }
     } catch (e) {
-      // Catch any unexpected errors
-      showAnimatedSnackBar(context, "An error occurred: $e");
-      print("Login error: $e");
+      if (!mounted) return;
+      // This catches Google sign-in errors
+      showAnimatedSnackBar(context, "Sign-in error: $e");
+      print("❌ Login error: $e");
     } finally {
-      // Ensure we only call setState if widget is still mounted
       if (mounted) setState(() => _isLoading = false);
     }
   }
@@ -99,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 // GitHub sign-in button (disabled for now)
                 SignInButton(
                   icon: FontAwesomeIcons.github,
-                  label: 'Sign in with GitHub (Coming Soon)',
+                  label: 'Sign in with GitHub',
                   onPressed: null, // disabled
                 ),
 

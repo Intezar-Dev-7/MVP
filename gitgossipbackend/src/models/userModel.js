@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
             index: true,
+            immutable: true,
         },
 
         /**
@@ -32,13 +33,18 @@ const userSchema = new mongoose.Schema(
         /**
          * Unique username chosen by the user
          */
+
         username: {
             type: String,
             unique: true,
             sparse: true,
-            index: true,
             lowercase: true,
             trim: true,
+            minlength: 3,
+            maxlength: 20,
+            match: /^[a-z0-9_]+$/,
+
+
         },
 
         /**
@@ -46,8 +52,8 @@ const userSchema = new mongoose.Schema(
          */
         email: {
             type: String,
+            required: true,
             unique: true,
-            sparse: true,
             lowercase: true,
             trim: true,
         },
@@ -59,7 +65,9 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true,
             sparse: true,
+            match: /^\+[1-9]\d{7,14}$/,
         },
+
 
         /**
          * Short user bio
@@ -81,28 +89,18 @@ const userSchema = new mongoose.Schema(
         techStack: {
             type: [String],
             default: [],
+            lowercase: true,
             index: true,
         },
         /**
          * Social media & portfolio links
          */
         socialLinks: {
-            instagram: {
-                type: String,
-                trim: true,
-            },
-            github: {
-                type: String,
-                trim: true,
-            },
-            linkedin: {
-                type: String,
-                trim: true,
-            },
-            portfolio: {
-                type: String,
-                trim: true,
-            },
+            instagram: { type: String, trim: true },
+            github: { type: String, trim: true, match: /^https?:\/\// },
+            linkedin: { type: String, trim: true, match: /^https?:\/\// },
+            portfolio: { type: String, trim: true, match: /^https?:\/\// },
+
         },
     },
     {
@@ -117,13 +115,9 @@ const userSchema = new mongoose.Schema(
 
 
 
-const newUser = mongoose.model(
-    "newUser",
-    userSchema
-);
 
-export default newUser;
-
+const User = mongoose.model("User", userSchema);
+export default User;
 /*
 mongoose.model() = creates a link between schema and MongoDB collection.
 export default = allows you to import and use it anywhere else in your app.

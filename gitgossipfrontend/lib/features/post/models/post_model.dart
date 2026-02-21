@@ -3,7 +3,7 @@ class PostModel {
   final String id;
 
   /// Firebase UID of the author
-  final String authorUid;
+  final String firebaseUid;
 
   /// Author username (denormalized)
   final String username;
@@ -36,7 +36,7 @@ class PostModel {
 
   PostModel({
     required this.id,
-    required this.authorUid,
+    required this.firebaseUid,
     required this.username,
     this.userProfilePic,
     required this.title,
@@ -55,7 +55,7 @@ class PostModel {
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
       id: json['_id'],
-      authorUid: json['authorUid'],
+      firebaseUid: json['firebaseUid'],
       username: json['username'],
       userProfilePic: json['userProfilePic'],
       title: json['title'],
@@ -76,7 +76,7 @@ class PostModel {
   // ---------- TO JSON ----------
   Map<String, dynamic> toJson() {
     return {
-      "authorUid": authorUid,
+      "firebaseUid": firebaseUid,
       "username": username,
       "userProfilePic": userProfilePic,
       "title": title,
@@ -95,7 +95,7 @@ class PostModel {
   // ---------- COPY WITH ----------
   PostModel copyWith({
     String? id,
-    String? authorUid,
+    String? firebaseUid,
     String? username,
     String? userProfilePic,
     String? title,
@@ -111,7 +111,7 @@ class PostModel {
   }) {
     return PostModel(
       id: id ?? this.id,
-      authorUid: authorUid ?? this.authorUid,
+      firebaseUid: firebaseUid ?? this.firebaseUid,
       username: username ?? this.username,
       userProfilePic: userProfilePic ?? this.userProfilePic,
       title: title ?? this.title,

@@ -9,7 +9,7 @@ const verifyFirebaseToken = async (req, res, next) => {
 
         console.log("AUTH HEADER:", req.headers.authorization);
 
-        // Chechking if the header exists and follows Bearer schema 
+        // Checking if the header exists and follows Bearer schema 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Authorization header missing" });
         }
@@ -18,28 +18,33 @@ const verifyFirebaseToken = async (req, res, next) => {
         const token = authHeader.split(" ")[1];
 
 
-        // verifying token with firehbase admin 
+        // Step 3: Verify token with Firebase
+        console.log("🔐 Verifying token with Firebase Admin...");
+        // verifying token with firebase admin 
         const decodedToken = await admin.auth().verifyIdToken(token, true); // check revocation
 
         // Normalize auth context
         req.user = {
-            uid: decodedToken.uid,
+            firebaseUid: decodedToken.uid,
             email: decodedToken.email || null,
-            name: decodedToken.name || null,
-            picture: decodedToken.picture || null,
+            fullName: decodedToken.name || null,
+            profilePic: decodedToken.picture || null,
             provider: decodedToken.firebase?.sign_in_provider || null,
         };
 
-
+        console.log("Firebase Verification Completed");
         // continue to next middleware 
         next();
     } catch (error) {
         console.error("Auth error:", error.code || error.message);
-        console.log("AUTH USER:", req.user);
+
 
         return res.status(401).json({ message: "Unauthorized" });
     }
 };
+
+
+
 
 export default verifyFirebaseToken;
 
