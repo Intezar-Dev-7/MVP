@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 class PostServices {
   Future<void> createPost({
     required String title,
-    required String description,
+    required String postDescription,
     String? githubUrl,
     String? liveDemoUrl,
     required List<XFile> images,
@@ -32,7 +32,7 @@ class PostServices {
     request.headers['Authorization'] = "Bearer $token";
 
     request.fields['title'] = title;
-    request.fields['postDescription'] = description;
+    request.fields['postDescription'] = postDescription;
     if (githubUrl != null) request.fields['githubUrl'] = githubUrl;
     if (liveDemoUrl != null) request.fields['liveDemoUrl'] = liveDemoUrl;
 
@@ -59,10 +59,13 @@ class PostServices {
         "Content-Type": "application/json",
       },
     );
+    print(response.statusCode);
 
     if (response.statusCode != 200) {
       throw Exception("Failed to fetch posts");
     }
+
+    print(response.body);
 
     final List<dynamic> data = jsonDecode(response.body);
     return data.map((e) => PostModel.fromJson(e)).toList();

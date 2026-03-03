@@ -49,6 +49,7 @@ class _ProjectsSectionState extends State<ProjectsSection> {
             }
 
             if (snapshot.hasError) {
+              print(snapshot);
               return const Padding(
                 padding: EdgeInsets.all(24),
                 child: Text(
@@ -75,11 +76,9 @@ class _ProjectsSectionState extends State<ProjectsSection> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: ProjectCard(
-                    imageUrl:
-                        post.postImages ??
-                        "https://via.placeholder.com/600x400",
-                    title: post.description,
-                    description: post.githubUrl ?? "No Github Link Avaiable",
+                    imageUrls: post.postImages,
+                    title: post.title,
+                    postDescription: post.postDescription,
                   ),
                 );
               }).toList(),

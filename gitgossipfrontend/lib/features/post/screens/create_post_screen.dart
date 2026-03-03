@@ -60,7 +60,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     try {
       await PostServices().createPost(
         title: titleController.text.trim(),
-        description: descriptionController.text.trim(),
+        postDescription: descriptionController.text.trim(),
         githubUrl: githubController.text.trim().isEmpty
             ? null
             : githubController.text.trim(),
