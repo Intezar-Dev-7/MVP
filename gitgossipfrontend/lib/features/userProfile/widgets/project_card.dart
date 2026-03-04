@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ProjectCard extends StatelessWidget {
-  final String imageUrl;
+  final List<String> imageUrls;
   final String title;
-  final String description;
+  final String postDescription;
 
   const ProjectCard({
     super.key,
-    required this.imageUrl,
+    required this.imageUrls,
     required this.title,
-    required this.description,
+    required this.postDescription,
   });
 
   @override
@@ -36,7 +36,7 @@ class ProjectCard extends StatelessWidget {
               topRight: Radius.circular(16),
             ),
             child: Image.network(
-              imageUrl,
+              imageUrls[0],
               height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -57,7 +57,7 @@ class ProjectCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  description,
+                  postDescription,
                   style: const TextStyle(fontSize: 14, color: Colors.white60),
                 ),
                 const SizedBox(height: 16),

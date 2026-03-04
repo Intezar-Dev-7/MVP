@@ -7,9 +7,9 @@ import Post from "../models/postModel.js";
 
 export const createPost = async (req, res) => {
     try {
-        const { title, description, githubUrl, liveDemoUrl } = req.body;
+        const { title, postDescription, githubUrl, liveDemoUrl } = req.body;
 
-        const firebaseUid = req.user.uid;
+        const firebaseUid = req.user.firebaseUid;
         console.log("Firebase UID:", firebaseUid);
         // 7VUzAPnQwRdApghpWQ6gp0EvXWB2
 
@@ -48,7 +48,7 @@ export const createPost = async (req, res) => {
             username: user.username,
             userProfilePic: user.profilePic,
             title: title,
-            postDescription: description,
+            postDescription: postDescription,
             postImages: uploadedImages,
             githubUrl,
             liveDemoUrl,
@@ -77,7 +77,7 @@ export const createPost = async (req, res) => {
 
 export const getUserPosts = async (req, res) => {
     try {
-        const firebaseUid = req.user.uid;
+        const firebaseUid = req.user.firebaseUid;
 
 
         const posts = await Post.find({ firebaseUid: firebaseUid })

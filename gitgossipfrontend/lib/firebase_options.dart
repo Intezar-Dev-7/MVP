@@ -25,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -47,29 +41,53 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAtRYkWmZAwBMIgRi3o-sFyD2PWWktYIU8',
-    appId: '1:586335171290:web:515a06344344f2e6be6be3',
-    messagingSenderId: '586335171290',
-    projectId: 'gitgossipapp',
-    authDomain: 'gitgossipapp.firebaseapp.com',
-    storageBucket: 'gitgossipapp.firebasestorage.app',
-    measurementId: 'G-5R45N7YNVG',
+    apiKey: 'AIzaSyDYxWjKVO-NhsYC0wWtzHX24CIhYxLiSvM',
+    appId: '1:810649785265:web:509e7834cea296d363e390',
+    messagingSenderId: '810649785265',
+    projectId: 'gitgossip-yash',
+    authDomain: 'gitgossip-yash.firebaseapp.com',
+    storageBucket: 'gitgossip-yash.firebasestorage.app',
+    measurementId: 'G-CELGZYN882',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDPmWQTCUEAy4khDgqhrgdoFn5MyHvdxCw',
-    appId: '1:586335171290:android:4238afcfe6a2c214be6be3',
-    messagingSenderId: '586335171290',
-    projectId: 'gitgossipapp',
-    storageBucket: 'gitgossipapp.firebasestorage.app',
+    apiKey: 'AIzaSyAZC9DdZ8q4Z8HVbCc69w91LRlhHC_IceE',
+    appId: '1:810649785265:android:0295f6ca15cc630963e390',
+    messagingSenderId: '810649785265',
+    projectId: 'gitgossip-yash',
+    storageBucket: 'gitgossip-yash.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD7gsd9CSvwAhCPiTmLYHRwPdudGlpnzFk',
-    appId: '1:586335171290:ios:a3c6f7e5f89d1811be6be3',
-    messagingSenderId: '586335171290',
-    projectId: 'gitgossipapp',
-    storageBucket: 'gitgossipapp.firebasestorage.app',
+    apiKey: 'AIzaSyCbnbMQCnyz9trFFS1WOlW0uFQzDTP3_rg',
+    appId: '1:810649785265:ios:63857e1cfda3f94363e390',
+    messagingSenderId: '810649785265',
+    projectId: 'gitgossip-yash',
+    storageBucket: 'gitgossip-yash.firebasestorage.app',
+    androidClientId: '810649785265-7tmmmng2f2srnvsratsob8oqvugf4cd7.apps.googleusercontent.com',
+    iosClientId: '810649785265-goj1kroqrjmmr6bdi7o757vdjnt47fgi.apps.googleusercontent.com',
     iosBundleId: 'com.example.gitgossip',
   );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCbnbMQCnyz9trFFS1WOlW0uFQzDTP3_rg',
+    appId: '1:810649785265:ios:63857e1cfda3f94363e390',
+    messagingSenderId: '810649785265',
+    projectId: 'gitgossip-yash',
+    storageBucket: 'gitgossip-yash.firebasestorage.app',
+    androidClientId: '810649785265-7tmmmng2f2srnvsratsob8oqvugf4cd7.apps.googleusercontent.com',
+    iosClientId: '810649785265-goj1kroqrjmmr6bdi7o757vdjnt47fgi.apps.googleusercontent.com',
+    iosBundleId: 'com.example.gitgossip',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDYxWjKVO-NhsYC0wWtzHX24CIhYxLiSvM',
+    appId: '1:810649785265:web:8b39aa7d84b5952c63e390',
+    messagingSenderId: '810649785265',
+    projectId: 'gitgossip-yash',
+    authDomain: 'gitgossip-yash.firebaseapp.com',
+    storageBucket: 'gitgossip-yash.firebasestorage.app',
+    measurementId: 'G-0KY32T1YGM',
+  );
+
 }
