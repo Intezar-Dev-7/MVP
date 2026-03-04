@@ -53,10 +53,12 @@ const newPostSchema = new mongoose.Schema(
         /**
          * Optional image attached to the post
          */
-        postImages: {
-            type: String,
-            default: null,
-        },
+        postImages: [
+            {
+                type: String,
+                
+            }
+        ],
 
         /**
          * Optional GitHub repository link

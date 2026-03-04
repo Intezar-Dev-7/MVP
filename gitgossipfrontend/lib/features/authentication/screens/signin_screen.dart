@@ -29,7 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       // Step 1: Google Sign-In
       final token = await googleAuthServices.signInWithGoogleAndGetToken();
-      if (!mounted) return;
+      // if (!mounted) return; //new temp change1 by aditya 
 
       if (token == null) {
         showAnimatedSnackBar(context, "Google sign-in failed or cancelled");
@@ -38,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       print("✅ Token received: ${token.substring(0, 20)}..."); // Debug log
 
-      if (!mounted) return;
+      // if (!mounted) return; //new temp change2 by aditya
 
       // Step 2: Save to Backend
       try {

@@ -15,10 +15,10 @@ class PostModel {
   final String title;
 
   /// Post description / caption
-  final String description;
+  final String postDescription;
 
   /// Optional post image
-  final String? postImages;
+  final List<String> postImages;
 
   /// Optional GitHub repository link
   final String? githubUrl;
@@ -40,8 +40,8 @@ class PostModel {
     required this.username,
     this.userProfilePic,
     required this.title,
-    required this.description,
-    this.postImages,
+    required this.postDescription,
+    required this.postImages,
     this.githubUrl,
     this.liveDemoUrl,
     required this.likes,
@@ -59,8 +59,10 @@ class PostModel {
       username: json['username'],
       userProfilePic: json['userProfilePic'],
       title: json['title'],
-      description: json['description'] ?? '',
-      postImages: json['postImages'],
+      postDescription: json['postDescription'] ?? '',
+      postImages: json['postImages'] != null
+          ? List<String>.from(json['postImages'])
+          : [],
       githubUrl: json['githubUrl'],
       liveDemoUrl: json['liveDemoUrl'],
       likes: json['likes'] ?? 0,
@@ -80,7 +82,7 @@ class PostModel {
       "username": username,
       "userProfilePic": userProfilePic,
       "title": title,
-      "description": description,
+      "postDescription": postDescription,
       "postImages": postImages,
       "githubUrl": githubUrl,
       "liveDemoUrl": liveDemoUrl,
@@ -99,8 +101,8 @@ class PostModel {
     String? username,
     String? userProfilePic,
     String? title,
-    String? description,
-    String? postImages,
+    String? postDescription,
+    List<String>? postImages,
     String? githubUrl,
     String? liveDemoUrl,
     int? likes,
@@ -115,7 +117,7 @@ class PostModel {
       username: username ?? this.username,
       userProfilePic: userProfilePic ?? this.userProfilePic,
       title: title ?? this.title,
-      description: description ?? this.description,
+      postDescription: postDescription ?? this.postDescription,
       postImages: postImages ?? this.postImages,
       githubUrl: githubUrl ?? this.githubUrl,
       liveDemoUrl: liveDemoUrl ?? this.liveDemoUrl,
