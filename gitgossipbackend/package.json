@@ -11,16 +11,18 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "cloudinary": "^1.41.3",
+    "cloudinary": "^2.9.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "firebase-admin": "^13.6.0",
+    "firebase-admin": "^13.7.0",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.0.0",
     "mongoose": "^9.0.1",
     "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^4.0.0",
+    "multer-storage-cloudinary": "^2.2.1",
     "nodemon": "^3.1.11",
-    "prettier": "^3.7.4"
+    "prettier": "^3.7.4",
+    "socket.io": "^4.8.3"
   }
 }

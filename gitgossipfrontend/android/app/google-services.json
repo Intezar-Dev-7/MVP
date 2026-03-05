@@ -1,42 +1,49 @@
 {
   "project_info": {
-    "project_number": "810649785265",
-    "project_id": "gitgossip-yash",
-    "storage_bucket": "gitgossip-yash.firebasestorage.app"
+    "project_number": "586335171290",
+    "project_id": "gitgossipapp",
+    "storage_bucket": "gitgossipapp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:810649785265:android:0295f6ca15cc630963e390",
+        "mobilesdk_app_id": "1:586335171290:android:4238afcfe6a2c214be6be3",
         "android_client_info": {
           "package_name": "com.example.gitgossip"
         }
       },
       "oauth_client": [
         {
-          "client_id": "810649785265-7tmmmng2f2srnvsratsob8oqvugf4cd7.apps.googleusercontent.com",
+          "client_id": "586335171290-g9gqogv3usqmhdthbh3h2e2ee0ipjgnk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.gitgossip",
-            "certificate_hash": "5e03ec401bf13e3d29e5bca69e91bbc87194e273"
+            "certificate_hash": "7d6f478a770274a889f8aa7ad1a0244183c60971"
           }
         },
         {
-          "client_id": "810649785265-if84tn5gp4qiik182g621rj56sbka680.apps.googleusercontent.com",
+          "client_id": "586335171290-r5980411f0f516ggormng4rtjk62ognu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAZC9DdZ8q4Z8HVbCc69w91LRlhHC_IceE"
+          "current_key": "AIzaSyDPmWQTCUEAy4khDgqhrgdoFn5MyHvdxCw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "810649785265-if84tn5gp4qiik182g621rj56sbka680.apps.googleusercontent.com",
+              "client_id": "586335171290-r5980411f0f516ggormng4rtjk62ognu.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "586335171290-91u419uik7dj9glp24e9u6gp9891qgpi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gitgossip"
+              }
             }
           ]
         }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gitgossip/features/DiscoverUsers/screens/discovers_screen.dart';
 import 'package:gitgossip/features/Home/screens/feed_screen.dart';
-import 'package:gitgossip/features/chat/screens/chat_screen.dart';
+import 'package:gitgossip/features/chat/screens/all_chats_screen.dart';
 import 'package:gitgossip/features/post/screens/create_post_screen.dart';
 import 'package:gitgossip/features/userProfile/screens/user_profile.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +29,12 @@ class MainNavScreen extends StatelessWidget {
       body: pages[navController.currentIndex],
 
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24), // Add padding to float
+        padding: const EdgeInsets.fromLTRB(
+          16,
+          0,
+          16,
+          24,
+        ), // Add padding to float
         child: const BottomNavBar(),
       ),
 
@@ -52,8 +57,8 @@ class MainNavScreen extends StatelessWidget {
                 color: Colors.blue.withOpacity(0.5),
                 blurRadius: 20,
                 offset: const Offset(0, 5),
-              )
-            ]
+              ),
+            ],
           ),
           child: const Icon(Icons.add, color: Colors.white, size: 28),
         ),

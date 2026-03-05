@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:gitgossip/features/userProfile/screens/edit_profile_screen.dart';
 import 'package:gitgossip/features/userProfile/widgets/profile_header.dart';
-import 'package:gitgossip/features/userProfile/widgets/project_section.dart';
+import 'package:gitgossip/features/userProfile/widgets/user_posts_section.dart';
 import 'package:gitgossip/features/userProfile/widgets/social_button.dart';
 import 'package:gitgossip/features/userProfile/widgets/tech_stack_section.dart';
 
@@ -87,17 +87,13 @@ class UserProfileScreen extends StatelessWidget {
                     label: 'GitHub',
                   ),
                   const SizedBox(width: 12),
-                  SocialButton(
-                    icon: FontAwesomeIcons.linkedin,
-                    label: 'Twitter',
-                  ),
                 ],
               ),
             ),
             const SizedBox(height: 32),
             const TechStackSection(),
             const SizedBox(height: 32),
-            const ProjectsSection(),
+            const UsersPostSection(),
             const SizedBox(height: 100),
           ],
         ),

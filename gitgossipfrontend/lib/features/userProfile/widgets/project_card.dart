@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ProjectCard extends StatelessWidget {
   final List<String> imageUrls;
@@ -15,7 +16,7 @@ class ProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(16),
@@ -58,21 +59,45 @@ class ProjectCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   postDescription,
-                  style: const TextStyle(fontSize: 14, color: Colors.white60),
+                  style: const TextStyle(fontSize: 16, color: Colors.white60),
                 ),
+
+                // --- NEW ACTION BUTTONS SECTION ---
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Color(0xFFFFA726),
-                          size: 18,
-                        ),
-                        const SizedBox(width: 4),
-                      ],
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(
+                        Icons.favorite_border,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        // Add Like logic
+                      },
+                    ),
+                    const SizedBox(width: 16),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(
+                        Icons.chat_bubble_outline,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        // Add Comment logic
+                      },
+                    ),
+                    const SizedBox(width: 16),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(Iconsax.share, color: Colors.white),
+                      onPressed: () {
+                        // Add Share logic
+                      },
                     ),
                   ],
                 ),

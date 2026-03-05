@@ -47,6 +47,7 @@ dependencies:
 
   # ---------------- APP ICON ----------------
   flutter_launcher_icons: ^0.14.4 # Generate app launcher icon
+  socket_io_client: ^3.1.4
 
 dev_dependencies:
   flutter_test:

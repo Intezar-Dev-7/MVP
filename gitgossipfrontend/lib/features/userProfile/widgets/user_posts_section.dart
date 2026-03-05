@@ -3,14 +3,14 @@ import 'package:gitgossip/features/post/models/post_model.dart';
 import 'package:gitgossip/features/post/services/post_services.dart';
 import 'package:gitgossip/features/userProfile/widgets/project_card.dart';
 
-class ProjectsSection extends StatefulWidget {
-  const ProjectsSection({super.key});
+class UsersPostSection extends StatefulWidget {
+  const UsersPostSection({super.key});
 
   @override
-  State<ProjectsSection> createState() => _ProjectsSectionState();
+  State<UsersPostSection> createState() => UsersPostSectionState();
 }
 
-class _ProjectsSectionState extends State<ProjectsSection> {
+class UsersPostSectionState extends State<UsersPostSection> {
   late Future<List<PostModel>> _postsFuture;
 
   @override
@@ -49,7 +49,6 @@ class _ProjectsSectionState extends State<ProjectsSection> {
             }
 
             if (snapshot.hasError) {
-              print(snapshot);
               return const Padding(
                 padding: EdgeInsets.all(24),
                 child: Text(
