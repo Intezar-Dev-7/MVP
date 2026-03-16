@@ -1,76 +1,166 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gitgossip/features/chat/models/message_model.dart';
+import 'package:gitgossip/features/chat/services/chat_services.dart';
 import 'package:gitgossip/features/chat/widgets/chat_app_bar.dart';
 import 'package:gitgossip/features/chat/widgets/chat_input_bar_widget.dart'
     show ChatInputBar;
-import 'package:gitgossip/features/chat/widgets/code_snippet_widget.dart';
-import 'package:gitgossip/features/chat/widgets/file_attach_widget.dart';
-import 'package:gitgossip/features/chat/widgets/receive_message.dart';
-import 'package:gitgossip/features/chat/widgets/sent_message_widget.dart';
+import 'package:gitgossip/features/chat/message_widgets/receive_message.dart';
+import 'package:gitgossip/features/chat/message_widgets/sent_message_widget.dart';
 
-class MessageScreen extends StatelessWidget {
-  MessageScreen({super.key});
+class MessageScreen extends StatefulWidget {
+  final String conversationId;
+  final String receiverId;
+  final String receiverName;
+  final String receiverAvatar;
 
+  const MessageScreen({
+    super.key,
+    required this.conversationId,
+    required this.receiverId,
+    required this.receiverName,
+    required this.receiverAvatar,
+  });
+
+  @override
+  State<MessageScreen> createState() => _MessageScreenState();
+}
+
+class _MessageScreenState extends State<MessageScreen> {
+  final ChatServices chatServices = ChatServices();
+  final ScrollController _scrollController = ScrollController();
   final TextEditingController _inputController = TextEditingController();
+
+  late String currentUserId;
+
+  final List<MessageModel> messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    initializeChat();
+  }
+
+  /// Main initialization flow
+  void initializeChat() async {
+    await loadOldMessages();
+
+    chatServices.joinConversation(widget.conversationId);
+
+    chatServices.listenMessages((data) {
+      final message = MessageModel.fromJson(data);
+
+      setState(() {
+        messages.insert(0, message);
+      });
+
+      scrollToBottom();
+    });
+
+    chatServices.markMessagesSeen(
+      conversationId: widget.conversationId,
+      userId: currentUserId,
+    );
+  }
+
+  /// Load chat history
+  Future<void> loadOldMessages() async {
+    final oldMessages = await chatServices.fetchMessages(widget.conversationId);
+
+    final parsedMessages = oldMessages
+        .map((m) => MessageModel.fromJson(m))
+        .toList();
+
+    setState(() {
+      messages.addAll(parsedMessages.reversed);
+    });
+
+    scrollToBottom();
+  }
+
+  /// Send message
+  void sendMessage(String text) {
+    if (text.trim().isEmpty) return;
+
+    chatServices.sendMessage(
+      conversationId: widget.conversationId,
+      senderId: currentUserId,
+      text: text,
+    );
+
+    _inputController.clear();
+  }
+
+  /// Scroll helper
+  void scrollToBottom() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.minScrollExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  String formatTime(DateTime date) {
+    final hour = date.hour;
+    final minute = date.minute.toString().padLeft(2, '0');
+    return "$hour:$minute";
+  }
+
+  @override
+  void dispose() {
+    chatServices.socketService.socket!.off("receiveMessage");
+    _scrollController.dispose();
+    _inputController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ChatAppBar(
         context: context,
-        name: 'Maya Rodriguez',
-        status: 'Offline',
-        avatarColor: const Color(0xFF1F5E3F),
-        avatarInitial: 'M',
+        name: widget.receiverName,
+        avatar: widget.receiverAvatar,
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(8.0),
-              children: [
-                ReceivedMessage(
-                  time: '8:07 PM',
-                  child: CodeSnippet(
-                    language: 'typescript',
-                    code: '''typescript
-'text-primary'>async 'text-primary
-  'text-primary'>try {
-    "text-primary">const decoded =
-} "text-primary">.catch (error)
-    "text-primary">return { succes
-}
-}''',
-                  ),
-                ),
-                const SizedBox(height: 8),
-                SentMessage(
-                  time: '3:34 PM',
-                  text:
-                      'Perfect! That\'s much cleaner. The error handling looks good now 👍',
-                  isDelivered: true,
-                ),
-                const SizedBox(height: 8),
-                ReceivedMessage(
-                  time: '8:09 PM',
-                  child: const Text(
-                    'Awesome! Also sharing the updated component file:',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ReceivedMessage(
-                  time: '8:14 PM',
-                  child: FileAttachment(
-                    fileName: 'AuthProvider.tsx',
-                    fileSize: '3.2 KB',
-                  ),
-                ),
-              ],
+            child: ListView.builder(
+              reverse: true,
+              controller: _scrollController,
+              padding: const EdgeInsets.all(8),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final msg = messages[index];
+
+                final isMe = msg.senderId == currentUserId;
+
+                if (isMe) {
+                  return SentMessage(
+                    text: msg.text,
+                    time: formatTime(msg.createdAt),
+                    isDelivered: msg.seen,
+                  );
+                } else {
+                  return ReceivedMessage(
+                    time: formatTime(msg.createdAt),
+                    child: Text(
+                      msg.text,
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                    ),
+                  );
+                }
+              },
             ),
           ),
-          ChatInputBar(
-            inputController: _inputController,
-          ),
+          ChatInputBar(inputController: _inputController, onSend: sendMessage),
         ],
       ),
     );

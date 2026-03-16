@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gitgossip/features/chat/screens/message_screen.dart';
 
 class ChatTile extends StatelessWidget {
   final String name;
   final String message;
   final String time;
   final String? avatar;
-  final bool online;
-  final int unreadCount;
+  final VoidCallback onTap;
 
   const ChatTile({
     super.key,
@@ -15,19 +13,13 @@ class ChatTile extends StatelessWidget {
     required this.message,
     required this.time,
     this.avatar,
-    this.online = false,
-    this.unreadCount = 0,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => MessageScreen()),
-        );
-      },
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
@@ -42,26 +34,9 @@ class ChatTile extends StatelessWidget {
                       ? NetworkImage(avatar!)
                       : null,
                   child: avatar == null
-                      ? const Icon(
-                          Icons.group,
-                          color: Colors.white70,
-                          size: 28,
-                        )
+                      ? const Icon(Icons.group, color: Colors.white70, size: 28)
                       : null,
                 ),
-                if (online)
-                  Positioned(
-                    bottom: 2,
-                    right: 2,
-                    child: Container(
-                      height: 10,
-                      width: 10,
-                      decoration: const BoxDecoration(
-                        color: Color(0xff4ade80),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
               ],
             ),
 
@@ -85,10 +60,7 @@ class ChatTile extends StatelessWidget {
                     message,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(color: Colors.white54, fontSize: 14),
                   ),
                 ],
               ),
@@ -96,7 +68,7 @@ class ChatTile extends StatelessWidget {
 
             const SizedBox(width: 10),
 
-            // Time & unread badge
+            // Time
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -104,23 +76,6 @@ class ChatTile extends StatelessWidget {
                   time,
                   style: const TextStyle(color: Colors.white54, fontSize: 13),
                 ),
-                const SizedBox(height: 8),
-                if (unreadCount > 0)
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Color(0xff22c55e),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      unreadCount.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
               ],
             ),
           ],

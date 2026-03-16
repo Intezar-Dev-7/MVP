@@ -79,7 +79,6 @@ export const getUserPosts = async (req, res) => {
     try {
         const firebaseUid = req.user.firebaseUid;
 
-
         const posts = await Post.find({ firebaseUid: firebaseUid })
             .sort({ createdAt: -1 });
 

@@ -77,3 +77,18 @@ export const getUserDetails = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+export const fetchAllUsers = async (req, res) => {
+
+    try {
+        const { firebaseUid } = req.params;
+
+        const users = await User.find({ firebaseUid: { $ne: firebaseUid } });
+        console.log('All Users:', users);
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+
+};

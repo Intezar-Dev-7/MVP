@@ -4,17 +4,17 @@ import 'package:gitgossip/features/userProfile/screens/other_user_profile_screen
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final BuildContext context;
   final String name;
-  final String status;
-  final Color avatarColor;
-  final String avatarInitial;
+  // final String status;
+
+  final String avatar;
 
   const ChatAppBar({
     super.key,
     required this.context,
     required this.name,
-    required this.status,
-    required this.avatarColor,
-    required this.avatarInitial,
+
+    // required this.status,
+    required this.avatar,
   });
 
   @override
@@ -32,26 +32,18 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
       ),
       title: InkWell(
-        onTap: (){
+        onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const OtherUserProfileScreen()),
+            MaterialPageRoute(
+              builder: (context) =>
+                  OtherUserProfileScreen(name: name, avatar: avatar),
+            ),
           );
         },
         child: Row(
           children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: avatarColor,
-                child: Text(
-                  avatarInitial,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
+            CircleAvatar(radius: 20, backgroundImage: NetworkImage(avatar)),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -65,10 +57,10 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    status,
-                    style: const TextStyle(color: Colors.white60, fontSize: 13),
-                  ),
+                  // Text(
+                  //   status,
+                  //   style: const TextStyle(color: Colors.white60, fontSize: 13),
+                  // ),
                 ],
               ),
             ),
@@ -89,10 +81,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.black,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(
-              color: Colors.grey,
-              width: 1,
-            ),
+            side: const BorderSide(color: Colors.grey, width: 1),
           ),
           offset: const Offset(0, 50),
           itemBuilder: (context) => [
@@ -127,16 +116,9 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               height: 48,
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.delete_outline,
-                    color: Colors.red,
-                    size: 20,
-                  ),
+                  const Icon(Icons.delete_outline, color: Colors.red, size: 20),
                   const SizedBox(width: 12),
-                  Text(
-                    'Clear chat',
-                    style: TextStyle(color: Colors.red)
-                  ),
+                  Text('Clear chat', style: TextStyle(color: Colors.red)),
                 ],
               ),
             ),
@@ -148,6 +130,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
     );
   }
+
   PopupMenuItem<String> _buildPopupMenuItem({
     required String value,
     required IconData icon,
@@ -158,30 +141,23 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       height: 48,
       child: Row(
         children: [
-          Icon(
-            icon,
-            color: Colors.white70,
-            size: 20,
-          ),
+          Icon(icon, color: Colors.white70, size: 20),
           const SizedBox(width: 12),
-          Text(
-            label,
-            style: TextStyle(color: Colors.grey)
-          ),
+          Text(label, style: TextStyle(color: Colors.grey)),
         ],
       ),
     );
   }
 
-// ✅ ADD THIS METHOD - Handle menu actions
+  // ✅ ADD THIS METHOD - Handle menu actions
   void _handleMenuAction(String action) {
     switch (action) {
       case 'search':
         _showSearchDialog();
         break;
-      case 'pin':
-        _togglePinConversation();
-        break;
+      // case 'pin':
+      //   _togglePinConversation();
+      //   break;
       case 'meeting':
         _scheduleMeeting();
         break;
@@ -202,73 +178,52 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.black38,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: Text(
-          'Search Messages',
-          
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Search Messages'),
         content: TextField(
           autofocus: true,
           decoration: InputDecoration(
             hintText: 'Search in conversation...',
-            prefixIcon: const Icon(
-              Icons.search,
-              color: Colors.white70,
-            ),
+            prefixIcon: const Icon(Icons.search, color: Colors.white70),
             filled: true,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: Colors.white70,
-                width: 1,
-              ),
+              borderSide: const BorderSide(color: Colors.white70, width: 1),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: Colors.white70,
-                width: 1,
-              ),
+              borderSide: const BorderSide(color: Colors.white70, width: 1),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: Colors.green,
-                width: 1,
-              ),
+              borderSide: const BorderSide(color: Colors.green, width: 1),
             ),
           ),
-          onChanged: (query) {
-          },
+          onChanged: (query) {},
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Colors.grey),
-            ),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
           ),
         ],
       ),
     );
   }
 
-  void _togglePinConversation() {
-    final isPinned = false;
+  // void _togglePinConversation() {
+  //   final isPinned = false;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isPinned ? 'Conversation pinned' : 'Conversation unpinned',
-        ),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(
+  //         isPinned ? 'Conversation pinned' : 'Conversation unpinned',
+  //       ),
+  //       backgroundColor: Colors.green,
+  //       duration: const Duration(seconds: 2),
+  //     ),
+  //   );
+  // }
 
   void _toggleMuteConversation() {
     showModalBottomSheet(
@@ -294,16 +249,11 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Mute notifications',
-                ),
+                child: Text('Mute notifications'),
               ),
               const SizedBox(height: 20),
               ListTile(
-                leading: const Icon(
-                  Icons.access_time,
-                  color: Colors.white70,
-                ),
+                leading: const Icon(Icons.access_time, color: Colors.white70),
                 title: const Text('For 1 hour'),
                 onTap: () {
                   Navigator.pop(context);
@@ -311,10 +261,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(
-                  Icons.access_time,
-                  color: Colors.white70,
-                ),
+                leading: const Icon(Icons.access_time, color: Colors.white70),
                 title: const Text('For 8 hours'),
                 onTap: () {
                   Navigator.pop(context);
@@ -322,10 +269,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(
-                  Icons.access_time,
-                  color: Colors.white70,
-                ),
+                leading: const Icon(Icons.access_time, color: Colors.white70),
                 title: const Text('For 24 hours'),
                 onTap: () {
                   Navigator.pop(context);
@@ -389,9 +333,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Chat Background',
-                ),
+                child: Text('Chat Background'),
               ),
               const SizedBox(height: 20),
               ListTile(
@@ -415,10 +357,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        Colors.green.withOpacity(0.3),
-                        Colors.blue,
-                      ],
+                      colors: [Colors.green.withOpacity(0.3), Colors.blue],
                     ),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -527,17 +466,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Text(
-                        'Schedule Meeting',
-                      ),
+                      Text('Schedule Meeting'),
                     ],
                   ),
 
                   const SizedBox(height: 24),
 
-                  Text(
-                    'Meeting Title',
-                  ),
+                  Text('Meeting Title'),
                   const SizedBox(height: 8),
                   TextField(
                     decoration: InputDecoration(
@@ -578,9 +513,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Date',
-                            ),
+                            Text('Date'),
                             const SizedBox(height: 8),
                             GestureDetector(
                               onTap: () async {
@@ -622,9 +555,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       size: 18,
                                     ),
                                     const SizedBox(width: 8),
-                                    Text(
-                                      'Select date',
-                                    ),
+                                    Text('Select date'),
                                   ],
                                 ),
                               ),
@@ -637,9 +568,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Time',
-                            ),
+                            Text('Time'),
                             const SizedBox(height: 8),
                             GestureDetector(
                               onTap: () async {
@@ -677,9 +606,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       size: 18,
                                     ),
                                     const SizedBox(width: 8),
-                                    Text(
-                                      'Select time',
-                                    ),
+                                    Text('Select time'),
                                   ],
                                 ),
                               ),
@@ -712,9 +639,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         elevation: 0,
                       ),
-                      child: Text(
-                        'Schedule Meeting',
-                      ),
+                      child: Text('Schedule Meeting'),
                     ),
                   ),
                 ],
@@ -731,9 +656,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Container(
@@ -749,9 +672,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              'Clear Chat',
-            ),
+            Text('Clear Chat'),
           ],
         ),
         content: Text(
@@ -760,10 +681,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Colors.grey),
-            ),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () {
@@ -778,10 +696,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
             child: const Text(
               'Clear',
-              style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
             ),
           ),
         ],
