@@ -17,7 +17,7 @@ class SocketService {
       return;
     }
     socket = IO.io(
-      "http://10.148.217.72:3000",
+      "http://10.127.254.72:3000",
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()

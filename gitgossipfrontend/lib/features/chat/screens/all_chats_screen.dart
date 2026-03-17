@@ -41,12 +41,6 @@ class _ChatScreenState extends State<ChatScreen> {
         centerTitle: false,
         backgroundColor: Colors.black,
         elevation: 0,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.more_vert, size: 28),
-          ),
-        ],
       ),
       backgroundColor: Colors.black,
       body: Column(
