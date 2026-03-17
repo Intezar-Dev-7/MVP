@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gitgossip/features/userProfile/widgets/tech_chip.dart';
 
 class TechStackSection extends StatelessWidget {
-  const TechStackSection({super.key});
+  final List<String> techStack;
+  const TechStackSection({super.key, required this.techStack});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,9 @@ class TechStackSection extends StatelessWidget {
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: const [TechChip(label: 'React')],
+            children: techStack
+      .map((tech) => TechChip(label: tech))
+      .toList(),
           ),
         ],
       ),

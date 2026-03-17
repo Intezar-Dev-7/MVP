@@ -49,6 +49,9 @@ dependencies:
   flutter_launcher_icons: ^0.14.4 # Generate app launcher icon
   socket_io_client: ^3.1.4
 
+  #------------------ Sliding Indicator--------
+  smooth_page_indicator: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

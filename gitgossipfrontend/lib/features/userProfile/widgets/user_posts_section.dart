@@ -19,6 +19,15 @@ class UsersPostSectionState extends State<UsersPostSection> {
     _postsFuture = PostServices().fetchUsersPosts();
   }
 
+  //changes by aditya
+  void refreshPosts() {
+  setState(() {
+    _postsFuture = PostServices().fetchUsersPosts();
+  });
+}
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -75,9 +84,11 @@ class UsersPostSectionState extends State<UsersPostSection> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: ProjectCard(
+                    post: post, // changes by aditya
                     imageUrls: post.postImages,
                     title: post.title,
                     postDescription: post.postDescription,
+                    onRefresh: refreshPosts,
                   ),
                 );
               }).toList(),
