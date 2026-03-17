@@ -1,8 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:gitgossip/features/chat/screens/message_screen.dart';
+import 'package:gitgossip/features/chat/services/chat_services.dart';
 import 'package:gitgossip/features/chat/widgets/chat_tile_widget.dart';
+import 'package:gitgossip/features/userProfile/models/user_model.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  List<UserModel> users = [];
+  bool isLoading = true;
+  final ChatServices _chatServices = ChatServices();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadListOfUsersFromBackend();
+  }
+
+  Future<void> _loadListOfUsersFromBackend() async {
+    final fetchedUsers = await _chatServices.fetchListOfUsers();
+    setState(() {
+      users = fetchedUsers;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +41,6 @@ class ChatScreen extends StatelessWidget {
         centerTitle: false,
         backgroundColor: Colors.black,
         elevation: 0,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.more_vert, size: 28),
-          ),
-        ],
       ),
       backgroundColor: Colors.black,
       body: Column(
@@ -50,51 +70,36 @@ class ChatScreen extends StatelessWidget {
 
           // Chat List
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              children: const [
-                ChatTile(
-                  name: 'Jordan Lee',
-                  message: 'Awesome! Also sharing the updated compo...',
-                  time: '7:54 PM',
-                  avatar: 'https://i.pravatar.cc/150?img=12',
-                  online: true,
-                ),
-                ChatTile(
-                  name: 'Frontend Team',
-                  message: "Alex: Here's the latest architecture design",
-                  time: '5:56 PM',
-                  avatar: null,
-                  unreadCount: 3,
-                ),
-                ChatTile(
-                  name: 'Sarah Chen',
-                  message: "Thanks for the review! I'll push the fixes soon",
-                  time: 'Yesterday',
-                  avatar: 'https://i.pravatar.cc/150?img=32',
-                  online: true,
-                ),
-                ChatTile(
-                  name: 'Backend Guild',
-                  message: 'Priya: const handleAuth = async () =>',
-                  time: 'Yesterday',
-                  avatar: null,
-                  unreadCount: 12,
-                ),
-                ChatTile(
-                  name: 'Maya Rodriguez',
-                  message: "Perfect! Let's sync tomorrow morning.",
-                  time: '2d ago',
-                  avatar: 'https://i.pravatar.cc/150?img=55',
-                ),
-                ChatTile(
-                  name: 'DevOps Squad',
-                  message: 'Alex: Pipeline is green! 🎉',
-                  time: '3d ago',
-                  avatar: null,
-                ),
-              ],
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: users.length,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    itemBuilder: (context, index) {
+                      final user = users[index];
+                      return ChatTile(
+                        name: user.fullName,
+                        message: "start Convesation",
+                        time: "",
+                        avatar: user.profilePic,
+                        onTap: () async {
+                          final conversation = await _chatServices
+                              .createOrGetConversation(user.id);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MessageScreen(
+                                conversationId: conversation["_id"],
+                                receiverId: user.id,
+                                receiverName: user.fullName,
+                                receiverAvatar: user.profilePic,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),

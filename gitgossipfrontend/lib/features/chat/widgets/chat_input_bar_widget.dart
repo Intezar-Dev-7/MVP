@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 
 class ChatInputBar extends StatefulWidget {
   final TextEditingController inputController;
+  final Function(String) onSend;
+
   const ChatInputBar({
     required this.inputController,
-    super.key});
+    required this.onSend,
+    super.key,
+  });
 
   @override
   State<ChatInputBar> createState() => _ChatInputBarState();
 }
 
 class _ChatInputBarState extends State<ChatInputBar> {
-
   bool _isExpanded = false;
   bool _hasText = false;
 
@@ -19,9 +22,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
   void initState() {
     super.initState();
     widget.inputController.addListener(() {
-      final hasText = widget.inputController.text
-          .trim()
-          .isNotEmpty;
+      final hasText = widget.inputController.text.trim().isNotEmpty;
       if (hasText != _hasText) {
         setState(() {
           _hasText = hasText;
@@ -51,7 +52,10 @@ class _ChatInputBarState extends State<ChatInputBar> {
                   decoration: BoxDecoration(
                     color: const Color(0xFF0D1418),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: const Color(0xFF00A884), width: 1.5),
+                    border: Border.all(
+                      color: const Color(0xFF00A884),
+                      width: 1.5,
+                    ),
                   ),
                   child: TextField(
                     controller: widget.inputController,
@@ -71,10 +75,15 @@ class _ChatInputBarState extends State<ChatInputBar> {
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
-                  icon: Icon(_hasText ? Icons.send : Icons.mic, color: Colors.white70),
+                  icon: Icon(
+                    _hasText ? Icons.send : Icons.mic,
+                    color: Colors.white70,
+                  ),
                   onPressed: () {
                     if (_hasText) {
-                      // TODO: Handle message sending
+                      final text = widget.inputController.text.trim();
+                      widget.onSend(text);
+                      widget.inputController.clear();
                     } else {
                       // TODO: Handle voice recording
                     }
@@ -87,6 +96,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
       ),
     );
   }
+
   Widget _buildExpandButton() {
     return AnimatedRotation(
       turns: _isExpanded ? 0.125 : 0, // 45 degrees when expanded
@@ -101,14 +111,10 @@ class _ChatInputBarState extends State<ChatInputBar> {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: _isExpanded
-                ? Colors.green.withOpacity(0.15)
-                : Colors.black,
+            color: _isExpanded ? Colors.green.withOpacity(0.15) : Colors.black,
             shape: BoxShape.circle,
             border: Border.all(
-              color: _isExpanded
-                  ? Colors.green.withOpacity(0.3)
-                  : Colors.grey,
+              color: _isExpanded ? Colors.green.withOpacity(0.3) : Colors.grey,
               width: 1,
             ),
           ),
@@ -122,7 +128,6 @@ class _ChatInputBarState extends State<ChatInputBar> {
     );
   }
 
-
   Widget _buildExpandedActions() {
     return Container(
       alignment: Alignment.center,
@@ -131,10 +136,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
         color: Colors.black,
         borderRadius: BorderRadius.circular(20),
         border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.withOpacity(0.5),
-            width: 1,
-          ),
+          bottom: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1),
         ),
       ),
       child: SingleChildScrollView(
@@ -188,19 +190,14 @@ class _ChatInputBarState extends State<ChatInputBar> {
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: color.withOpacity(0.3),
-            width: 1,
-          ),
+          border: Border.all(color: color.withOpacity(0.3), width: 1),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: color, size: 18),
             const SizedBox(width: 6),
-            Text(
-              label,
-            ),
+            Text(label),
           ],
         ),
       ),

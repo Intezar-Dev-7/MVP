@@ -7,7 +7,7 @@ class UserModel {
   /// Firebase Authentication UID
   final String firebaseUid;
 
-  final String? fullName;
+  final String fullName;
   final String? username;
   final String email;
 
@@ -15,7 +15,7 @@ class UserModel {
   final String? userPhoneNumber;
   final String? userBio;
 
-  final String? profilePic;
+  final String profilePic;
   final List<String>? techStack;
 
   final SocialLinks? socialLinks;
@@ -26,12 +26,12 @@ class UserModel {
   UserModel({
     required this.id,
     required this.firebaseUid,
-    this.fullName,
+    required this.fullName,
     this.username,
     required this.email,
     this.userPhoneNumber,
     this.userBio,
-    this.profilePic,
+    required this.profilePic,
     this.techStack,
     this.socialLinks,
 
