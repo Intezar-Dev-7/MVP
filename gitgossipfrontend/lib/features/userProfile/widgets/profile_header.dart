@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gitgossip/features/userProfile/models/user_model.dart';
 import 'package:gitgossip/features/userProfile/widgets/stat_column.dart';
 
 class ProfileHeader extends StatelessWidget {
+  final UserModel user; //changes by aditya
   final VoidCallback onEditPressed;
 
-  const ProfileHeader({super.key, required this.onEditPressed});
+  const ProfileHeader({
+    super.key,
+    required this.user,
+    required this.onEditPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +23,9 @@ class ProfileHeader extends StatelessWidget {
             height: 100,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: NetworkImage(
-                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+                  user.profilePic ?? "https://via.placeholder.com/150",
                 ),
                 fit: BoxFit.cover,
               ),
@@ -30,8 +36,8 @@ class ProfileHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Alex Morgan',
+                Text(
+                  user.fullName ?? "No Name", //changes by aditya
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -39,20 +45,20 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  '@alexmorgan',
+                Text(
+                  '@${user.username ?? ""}', //changes by aditya
                   style: TextStyle(fontSize: 15, color: Colors.white60),
                 ),
                 const SizedBox(height: 16),
-                const Row(
-                  children: [
-                    StatColumn(label: 'Followers', value: '1247'),
-                    SizedBox(width: 24),
-                    StatColumn(label: 'Following', value: '342'),
-                    SizedBox(width: 24),
-                    StatColumn(label: 'Posts', value: '89'),
-                  ],
-                ),
+                //                 Row(
+                //  children: [
+                //   StatColumn(label: 'Followers', value: '1247'),
+                //   SizedBox(width: 24),
+                //   StatColumn(label: 'Following', value: '342'),
+                //   SizedBox(width: 24),
+                //   StatColumn(label: 'Posts', value: '89'),
+                //  ],
+                // )
               ],
             ),
           ),

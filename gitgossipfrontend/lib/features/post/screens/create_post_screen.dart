@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:gitgossip/core/widgets/custom_snack_bar.dart';
 import 'package:gitgossip/features/post/services/post_services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:gitgossip/features/post/models/post_model.dart'; //changes by aditya
 
 class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({super.key});
+  final PostModel? post; //changes by aditya
+  const CreatePostScreen({super.key, this.post}); //aditya
 
   @override
   State<CreatePostScreen> createState() => _CreatePostScreenState();
@@ -14,6 +16,8 @@ class CreatePostScreen extends StatefulWidget {
 class _CreatePostScreenState extends State<CreatePostScreen> {
   final ImagePicker _picker = ImagePicker();
   List<XFile> selectedImages = [];
+  //new change by aditya
+  List<String> existingImages = [];
   bool isPosting = false;
 
   // Controllers
@@ -21,6 +25,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController githubController = TextEditingController();
   final TextEditingController liveDemoController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
+
+  //changes by aditya
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.post != null) {
+      titleController.text = widget.post!.title;
+      descriptionController.text = widget.post!.postDescription;
+      githubController.text = widget.post!.githubUrl ?? "";
+      liveDemoController.text = widget.post!.liveDemoUrl ?? "";
+
+      existingImages = widget.post!.postImages ?? [];
+    }
+  }
 
   @override
   void dispose() {
@@ -31,11 +50,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     super.dispose();
   }
 
+  // Future<void> pickImages() async {
+  //   final images = await _picker.pickMultiImage(imageQuality: 70);
+  //   if (images.isNotEmpty) {
+  //     setState(() {
+  //       selectedImages = images;
+  //     });
+  //   }
+  // }
+
   Future<void> pickImages() async {
     final images = await _picker.pickMultiImage(imageQuality: 70);
+
     if (images.isNotEmpty) {
       setState(() {
-        selectedImages = images;
+        selectedImages.addAll(images);
       });
     }
   }
@@ -50,25 +79,49 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       return;
     }
 
-    if (descriptionController.text.trim().isEmpty && selectedImages.isEmpty) {
+    // if (descriptionController.text.trim().isEmpty && selectedImages.isEmpty) {
+    //   showAnimatedSnackBar(context, "Add a description or at least 1 image");
+    //   return;
+    // }
+
+    if (descriptionController.text.trim().isEmpty &&
+        selectedImages.isEmpty &&
+        widget.post == null) {
       showAnimatedSnackBar(context, "Add a description or at least 1 image");
       return;
-    }
+    } //changes by aditya
 
     setState(() => isPosting = true);
 
     try {
-      await PostServices().createPost(
-        title: titleController.text.trim(),
-        postDescription: descriptionController.text.trim(),
-        githubUrl: githubController.text.trim().isEmpty
-            ? null
-            : githubController.text.trim(),
-        liveDemoUrl: liveDemoController.text.trim().isEmpty
-            ? null
-            : liveDemoController.text.trim(),
-        images: selectedImages,
-      );
+      // changes by aditya
+      if (widget.post == null) {
+        await PostServices().createPost(
+          title: titleController.text.trim(),
+          postDescription: descriptionController.text.trim(),
+          githubUrl: githubController.text.trim().isEmpty
+              ? null
+              : githubController.text.trim(),
+          liveDemoUrl: liveDemoController.text.trim().isEmpty
+              ? null
+              : liveDemoController.text.trim(),
+          images: selectedImages,
+        );
+      } else {
+        await PostServices().updatePost(
+          postId: widget.post!.id,
+          title: titleController.text.trim(),
+          postDescription: descriptionController.text.trim(),
+          githubUrl: githubController.text.trim().isEmpty
+              ? null
+              : githubController.text.trim(),
+          liveDemoUrl: liveDemoController.text.trim().isEmpty
+              ? null
+              : liveDemoController.text.trim(),
+          images: selectedImages,
+          existingImages: existingImages, //new changes by aditya
+        );
+      }
 
       if (!mounted) return;
 
@@ -89,6 +142,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       setState(() => isPosting = false);
       showAnimatedSnackBar(context, e.toString());
     }
+  }
+
+  // changes by aditya
+  void removeImage(int index) {
+    setState(() {
+      selectedImages.removeAt(index);
+    });
   }
 
   @override
@@ -163,23 +223,99 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
 
               // SHOW SELECTED IMAGES
-              if (selectedImages.isNotEmpty)
+
+              //changes by aditya
+              if (existingImages.isNotEmpty || selectedImages.isNotEmpty)
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
-                  children: selectedImages
-                      .map(
-                        (img) => ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            File(img.path),
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
+                  children: [
+                    // EXISTING NETWORK IMAGES
+                    ...List.generate(existingImages.length, (index) {
+                      final img = existingImages[index];
+
+                      return Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              img,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                      )
-                      .toList(),
+
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  existingImages.removeAt(index);
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: EdgeInsets.all(4),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+
+                    // NEW LOCAL IMAGES
+                    ...List.generate(selectedImages.length, (index) {
+                      final img = selectedImages[index];
+
+                      return Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              File(img.path),
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedImages.removeAt(index);
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: EdgeInsets.all(4),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
                 ),
 
               SizedBox(height: 24),

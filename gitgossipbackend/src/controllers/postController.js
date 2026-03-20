@@ -90,3 +90,117 @@ export const getUserPosts = async (req, res) => {
         });
     }
 };
+
+
+//changes by aditya - post updation/deletion
+// UPDATE POST 
+export const updatePost = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const firebaseUid = req.user.firebaseUid;
+
+        const { title, postDescription, githubUrl, liveDemoUrl } = req.body;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (post.firebaseUid !== firebaseUid) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        // let uploadedImages = post.postImages;
+
+        // if (req.files && req.files.length > 0) {
+        //     uploadedImages = [];
+
+        //     for (const file of req.files) {
+        //         const imageUrl = await new Promise((resolve, reject) => {
+        //             cloudinary.uploader.upload_stream(
+        //                 { folder: "posts" },
+        //                 (error, result) => {
+        //                     if (error) return reject(error);
+        //                     resolve(result.secure_url);
+        //                 }
+        //             ).end(file.buffer);
+        //         });
+
+        //         uploadedImages.push(imageUrl);
+        //     }
+        // }
+
+        let uploadedImages = [];
+
+const existingImages = req.body.existingImages
+  ? JSON.parse(req.body.existingImages)
+  : [];
+
+uploadedImages = [...existingImages];
+
+if (req.files && req.files.length > 0) {
+  for (const file of req.files) {
+    const imageUrl = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { folder: "posts" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url);
+        }
+      ).end(file.buffer);
+    });
+
+    uploadedImages.push(imageUrl);
+  }
+}
+
+        post.title = title ?? post.title;
+        post.postDescription = postDescription ?? post.postDescription;
+        post.githubUrl = githubUrl ?? post.githubUrl;
+        post.liveDemoUrl = liveDemoUrl ?? post.liveDemoUrl;
+        post.postImages = uploadedImages;
+
+        await post.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Post updated successfully",
+            post
+        });
+
+    } catch (error) {
+        console.error("Error updating post:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+
+//DELETE POST 
+export const deletePost = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const firebaseUid = req.user.firebaseUid;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (post.firebaseUid !== firebaseUid) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        await Post.findByIdAndDelete(postId);
+
+        res.status(200).json({
+            success: true,
+            message: "Post deleted successfully"
+        });
+
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
