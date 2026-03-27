@@ -76,3 +76,37 @@ This project is currently in the MVP stage and will continue to evolve with more
 
 Feel free to connect and collaborate!
 
+
+## ScreenShots 
+---
+
+## Splash Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20splashscreen.jpg)
+
+## SignIn Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20signinScreeen.jpg)
+
+## Feed Screen / Home Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20feedScreen.jpg)
+
+## Discover Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20discoverscreen.jpg)
+
+## Create Post Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20createPostScreen.jpg)
+
+## Chat Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/erro%20chatscreen.jpg)
+
+## Message Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20messageScreen.jpg)
+
+## Profile Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20profileScreen.jpg)
+
+## Edit Profile Screen 
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20editprofilescreen.jpg)
+
+![Alt Text](https://github.com/Intezar-Dev-7/MVP/blob/main/error%20editprofilescreen2.jpg)
+
+
