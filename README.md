@@ -54,11 +54,6 @@ Error is a developer-focused networking platform (currently in MVP stage) built 
 
 * Cloudinary
 
----
-
-## 📱 Play Store Link
-
-[Add your Play Store link here]
 
 ---
 
